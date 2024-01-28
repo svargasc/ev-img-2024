@@ -1,0 +1,58 @@
+registar
+#POST
+http://localhost:5000/register
+{
+  "username": "yoG",
+  "email": "yoG@gmail.com",
+  "password": "yoG123"
+}
+
+loguear
+#POST
+http://localhost:5000/login
+{
+  "email": "yoG@gmail.com",
+  "password": "yoG123"
+}
+
+eliminar sesion
+#GET
+http://localhost:5000/logout
+
+-----------------------------
+
+crear evento
+#POST
+http://localhost:5000/events
+{
+  "title":"event user 1",
+  "description": "event one!",
+  "address": "aveniu aveniu",
+  "date": "2023-12-02"
+}
+
+ver eventos
+#GET
+http://localhost:5000/events
+
+ver eventos por id
+#GET
+http://localhost:5000/events/1
+
+actualizar evento
+#PUT
+http://localhost:5000/events/1
+{
+  "title":"event user 1",
+  "description": "event one!",
+  "address": "aveniu aveniu",
+  "date": "2023-12-02"
+}
+
+actualizar imagen del evento
+#PUT
+http://localhost:5000/events/image
+
+eliminar evento
+#DELETE
+http://localhost:5000/events/1
