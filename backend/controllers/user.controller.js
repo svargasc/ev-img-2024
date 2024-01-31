@@ -63,7 +63,7 @@ export const login = async (req, res) => {
       // Establecer cookie con el token
       res.cookie("token", token);
 
-      return res.json({ Status: "Success" });
+      return res.json({ Status: "Success" , token: token});
     } else {
       return res.json({ Error: "Password not matched" });
     }
