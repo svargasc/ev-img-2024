@@ -23,17 +23,17 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/events-clients" element={<EventsClients />} />
-            <Route path="/events/:id" element={<EventsFormPage />} />
-            <Route path="/events/:id/add-eventImages" element={<EventsFormImages />} />
-            <Route path="/events" element={<EventsPage />} />
-            <Route path="/add-event" element={<EventsFormPage />} />
-            <Route
-              element={
-                <ProtectedRoute>
-                  <Route path="/profile" element={<ProfilePage />} />
-                </ProtectedRoute>
-              }
-            />
+
+            <Route element={<ProtectedRoute />}>
+              <Route path="/events" element={<EventsPage />} />
+              <Route path="/add-event" element={<EventsFormPage />} />
+              <Route path="/events/:id" element={<EventsFormPage />} />
+              <Route
+                path="/events/:id/add-eventImages"
+                element={<EventsFormImages />}
+              />
+              <Route path="/profile" element={<ProfilePage />} />
+            </Route>
           </Routes>
         </BrowserRouter>
       </TaskProvider>

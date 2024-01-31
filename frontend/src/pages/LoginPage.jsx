@@ -14,11 +14,12 @@ function LoginPage() {
 
   const onSubmit = handleSubmit((data) => {
     signin(data);
+    console.log(data);
   })
 
-  useEffect(() => {
-    if (isAuthenticated) navigate("/events")
-  },[isAuthenticated])
+  // useEffect(() => {
+  //   if (isAuthenticated) navigate("/events")
+  // },[isAuthenticated])
 
   return (
     <>
@@ -29,6 +30,11 @@ function LoginPage() {
                     <Link to="/"><img className='1/2' src={ logoeventBrew } alt="" /></Link>
                     <p className='bg-[#4A2D0B] rounded-full py-1 px-4 text-[#FFEEB3] text-2xl '>¿Aún no tienes cuenta? Registrate aquí. <NavLink className="text-[#AC703E] underline hover:font-bold" to="/register" >Registrarse</NavLink> </p>
                 </div>
+                {signinErrors.map((error, i) => (
+                  <div className='bg-red-500 p-2 text-white text-center my-2' key={i}>
+                    {error}
+                  </div>
+                ))}
                 <form 
                  className='flex flex-col items-center w-1/2 h-[70%]' 
                  onSubmit={onSubmit}

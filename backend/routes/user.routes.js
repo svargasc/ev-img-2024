@@ -4,10 +4,13 @@ import { login, register } from "../controllers/user.controller.js";
 
 const router = Router();
 
-router.get("/", verifyUser, (req, res) => {
-  return res.json({ Status: "Success", username: req.username });
+router.get("/", (req, res) => {
+  // return res.json({ Status: "Success", username: req.username });
 });
 
+router.get("/verify", verifyUser, (req, res) => {
+  return res.json({ Status: "Success", username: req.username });
+});
 router.post("/register", register);
 
 router.post("/login", login);

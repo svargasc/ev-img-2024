@@ -34,8 +34,9 @@ export const AuthProvider = ({ children }) => {
   const signin = async (user) => {
     try {
       const res = await loginRequest(user);
-      setUser(res.data);
       setIsAuthenticated(true);
+      setUser(res.data);
+      console.log(res);
     } catch (error) {
       if (Array.isArray(error.response.data)) {
         return setErrors(error.response.data);
@@ -62,13 +63,17 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     async function checkLogin() {
       const cookies = Cookies.get();
+      console.log(cookies);
+
       if (!cookies.token) {
         setIsAuthenticated(false);
         setLoading(false);
         return setUser(null);
       }
+
       try {
         const res = await verityTokenRequest(cookies.token);
+        console.log(res);
         if (!res.data) {
           setIsAuthenticated(false);
           setLoading(false);
@@ -79,6 +84,7 @@ export const AuthProvider = ({ children }) => {
         setUser(res.data);
         setLoading(false);
       } catch (error) {
+        console.log(error);
         setIsAuthenticated(false);
         setUser(null);
         setLoading(false);
