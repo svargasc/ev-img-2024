@@ -18,7 +18,7 @@ export const upload = multer({ storage: storage });
 
 export const getEvents = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.username.id;
 
     const [result] = await pool.query(
       "SELECT * FROM events WHERE user_id = ? ORDER BY dates ASC",
@@ -47,7 +47,7 @@ export const getEvent = async (req, res) => {
 export const createEvent = async (req, res) => {
   try {
     const { title, description, address, dates } = req.body;
-    const userId = req.user.id; // Obtenemos el user_id del usuario autenticado
+    const userId = req.username.id; // Obtenemos el user_id del usuario autenticado
 
     const [result] = await pool.query(
       "INSERT INTO events(title, description, address, dates, user_id) VALUES (?, ?, ?, ?, ?)",
