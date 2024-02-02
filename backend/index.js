@@ -18,6 +18,13 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  const error = new Error('Endpoint no encontrado');
+  error.status = 404;
+  console.log(error);
+  next(error); // Pasar el error al siguiente middleware
+});
+
 // Configuración manual para las solicitudes OPTIONS
 app.options('/upload', (req, res) => {
   res.header('Access-Control-Allow-Methods', 'POST, GET, DELETE, PUT');
