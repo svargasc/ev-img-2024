@@ -24,8 +24,13 @@ export const register = async (req, res) => {
     const hashedPassword = await hashPassword(password);
 
     // Inserción de usuario
-    const insertQuery = "INSERT INTO users (`username`, `email`, `password`) VALUES (?, ?, ?)";
+    const insertQuery =
+      "INSERT INTO users (`username`, `email`, `password`) VALUES (?, ?, ?)";
     await pool.query(insertQuery, [username, email, hashedPassword]);
+
+    jwt.sign({
+      id: da,
+    });
 
     return res.json({ Status: "Success" });
   } catch (error) {
@@ -47,7 +52,10 @@ export const login = async (req, res) => {
     }
 
     // Comparar contraseñas
-    const passwordMatch = await bcrypt.compare(password.toString(), data[0].password);
+    const passwordMatch = await bcrypt.compare(
+      password.toString(),
+      data[0].password
+    );
 
     if (passwordMatch) {
       const user = {
@@ -56,17 +64,25 @@ export const login = async (req, res) => {
       };
 
       // Crear token
-      const token = jwt.sign(user, process.env.JWT_SECRET || "secret-key", {
-        expiresIn: "1d",
-      });
-
-      // Establecer cookie con el token
-      res.cookie("token", token, {
-        domain: '.onrender.com',
-        path: '/',
-        // otras opciones de cookie si es necesario
-      });
-      return res.json({ Status: "Success" , token: token});
+      jwt.sign(
+        user,
+        "secret-key",
+        {
+          expiresIn: "1d",
+        },
+        (err, token) => {
+          // Establecer cookie con el token
+          res.cookie("token", token, {
+            domain: ".onrender.com",
+            path: "/",
+            // otras opciones de cookie si es necesario
+          });
+          res.json({
+            message: "Success Login",
+          });
+        }
+      );
+      // return res.json({ Status: "Success", token: token });
     } else {
       return res.json({ Error: "Password not matched" });
     }
