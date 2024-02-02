@@ -1,5 +1,5 @@
-// auth.js
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
+import { TOKEN_SECRET } from "../config.js";
 
 export const auth = (req, res, next) => {
   try {
@@ -10,12 +10,11 @@ export const auth = (req, res, next) => {
         .status(401)
         .json({ message: "No token, authorization denied" });
 
-    jwt.verify(token, process.env.JWT_SECRET || "secret-key", (error, user) => {
-      if (error) {
-        return res.status(401).json({ message: "Token is not valid" });
-      }
-      req.user = user; // Include user information in the request
-      console.log("Decoded User:", user); // Add this line for debugging
+    jwt.verify(token, TOKEN_SECRET, (err, username) => {
+      if (err) return res.status(403).json({ message: "Invalid token" });
+      
+      req.username = username; 
+      console.log("Decoded User:", username); 
       next();
     });
   } catch (error) {

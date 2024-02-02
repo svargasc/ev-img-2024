@@ -1,6 +1,7 @@
 import { pool } from "../db/db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { createAccesToken } from "../jwt/jwt.js";
 
 const saltRounds = 10;
 
@@ -28,11 +29,9 @@ export const register = async (req, res) => {
       "INSERT INTO users (`username`, `email`, `password`) VALUES (?, ?, ?)";
     await pool.query(insertQuery, [username, email, hashedPassword]);
 
-    jwt.sign({
-      id: da,
-    });
-
-    return res.json({ Status: "Success" });
+    const token = await createAccesToken({ id: existingUsers.id });
+    res.cookie("token", token);
+    res.json({ Status: "Success Register" });
   } catch (error) {
     console.error("Error in register:", error);
     return res.json({ Error: "Registration error in server" });
@@ -64,25 +63,13 @@ export const login = async (req, res) => {
       };
 
       // Crear token
-      jwt.sign(
-        user,
-        "secret-key",
-        {
-          expiresIn: "1d",
-        },
-        (err, token) => {
-          // Establecer cookie con el token
-          res.cookie("token", token, {
-            domain: ".onrender.com",
-            path: "/",
-            // otras opciones de cookie si es necesario
-          });
-          res.json({
-            message: "Success Login",
-          });
-        }
-      );
-      // return res.json({ Status: "Success", token: token });
+      const token = await createAccesToken({ id: user.id });
+      // res.cookie("token", token);
+      res.cookie("token", token, {
+        domain: ".onrender.com",
+        path: "/",
+      });
+      res.json({ Status: "Success Login" });
     } else {
       return res.json({ Error: "Password not matched" });
     }
@@ -91,3 +78,15 @@ export const login = async (req, res) => {
     return res.json({ Error: "Login error in server" });
   }
 };
+
+export const logout = (req, res) => {
+  res.cookie("token", "", {
+    expires: new Date(0),
+  });
+  return res.sendStatus(200);
+};
+
+export const profile = (req, res) => {
+  console.log(req.username);
+  res.send('Profilee')
+}

@@ -1,5 +1,3 @@
-// events.routes.js
-
 import { Router } from "express";
 import {
   getEvents,

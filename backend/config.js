@@ -8,3 +8,4 @@ export const DB_PORT = process.env.DB_PORT || 3306
 export const DB_USER = process.env.DB_USER || 'root'
 export const DB_PASWORD = process.env.DB_PASWORD || 'Apto1404'
 export const DB_DATABASE = process.env.DB_DATABASE || 'eventsbrews'
+export const TOKEN_SECRET = 'secret-key'
