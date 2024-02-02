@@ -9,17 +9,33 @@ function LoginPage() {
 
   const {register, handleSubmit, formState: { errors },} = useForm();
     const {signin, errors: signinErrors, isAuthenticated} = useAuth();
-
+    const email = useRef(null)
+    const password = useRef(null)
+  
     const navigate = useNavigate()
 
-  const onSubmit = handleSubmit((data) => {
+  /*const onSubmit = handleSubmit((data) => {
     signin(data);
     console.log(data);
-  })
+  })*/
 
-  // useEffect(() => {
-  //   if (isAuthenticated) navigate("/events")
-  // },[isAuthenticated])
+  const onSubmit = (e) => {
+    e.preventDefault()
+    console.log(email.current.value,password.current.value);
+    const data = {email:email.current.value, password:password.current.value}
+    axios.post('https://events-cqtw.onrender.com/login',data)
+    .then(res => {
+      const token = res.data.token;
+      console.log(token);
+      document.cookie = `token=${token} : path=/`
+    })
+    .catch(error => console.log(error))
+  }
+  
+
+   useEffect(() => {
+    if (isAuthenticated) navigate("/events")
+  },[isAuthenticated])
 
   return (
     <>
@@ -50,6 +66,7 @@ function LoginPage() {
                          className='my-2 w-2/3 h-12 text-lg bg-[#FFEEB3] text-[#AC703E] pl-2 font-bold placeholder-[#AC703E] placeholder:font-bold' 
                          type="email" {...register("email",{ required:true })} 
                          placeholder='Correo:'
+                          ref={email}
                         />
 
                         {errors.email && (<p className='text-red-500'>email is required</p>)}
@@ -58,6 +75,7 @@ function LoginPage() {
                          className='my-2 w-2/3 h-12 text-lg bg-[#FFEEB3] text-[#AC703E] pl-2 font-bold placeholder-[#AC703E] placeholder:font-bold' 
                          type="password" {...register("password",{ required:true })} 
                          placeholder='Contraseña:'
+                         ref={password}
                         />
 
                         {errors.password && (<p className='text-red-500'>password is required</p>)}
