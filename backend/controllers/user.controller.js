@@ -61,13 +61,11 @@ export const login = async (req, res) => {
       });
 
       // Establecer cookie con el token
-      res.cookie("token", token, {
+      return res.cookie("token", token, {
         domain: 'events-cqtw.onrender.com',
         path: '/',
         // otras opciones de cookie si es necesario
       });
-
-      return res.json({ Status: "Success" , token: token});
     } else {
       return res.json({ Error: "Password not matched" });
     }
