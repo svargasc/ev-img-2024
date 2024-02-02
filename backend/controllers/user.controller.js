@@ -2,6 +2,7 @@ import { pool } from "../db/db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { createAccesToken } from "../jwt/jwt.js";
+import { TOKEN_SECRET } from "../config.js";
 
 const saltRounds = 10;
 
@@ -86,7 +87,37 @@ export const logout = (req, res) => {
   return res.sendStatus(200);
 };
 
+export const verifyToken = (req, res) => {
+  const { token } = req.cookies;
+
+  if (!token) return res.status(401).json({ message: "Unauthorized" });
+
+  jwt.verify(token, TOKEN_SECRET, async (err, decodedToken) => {
+    if (err) return res.status(401).json({ message: "Unauthorized" });
+
+    try {
+      const { id } = decodedToken;
+      const userQuery = "SELECT * FROM users WHERE id = ?";
+      const [userData] = await pool.query(userQuery, [id]);
+
+      if (userData.length === 0) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const user = userData[0];
+      return res.json({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      });
+    } catch (error) {
+      console.error("Error verifying token:", error);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
+};
+
 export const profile = (req, res) => {
   console.log(req.username);
-  res.send('Profilee')
-}
+  res.send("Profilee");
+};

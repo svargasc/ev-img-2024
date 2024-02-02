@@ -1,14 +1,11 @@
 import { Router } from "express";
-import verifyUser from "../jwt/verify.token.js";
-import { login, logout, profile, register } from "../controllers/user.controller.js";
+import { login, logout, profile, register, verifyToken } from "../controllers/user.controller.js";
 import { auth } from "../jwt/auth.js";
 
 const router = Router();
 
 
-router.get("/verify", verifyUser, (req, res) => {
-  return res.json({ Status: "Success", username: req.username });
-});
+router.get("/verify", verifyToken);
 
 router.post("/register", register);
 
