@@ -7,33 +7,46 @@ import axios from 'axios';
 
 function LoginPage() {
 
+  // const {register, handleSubmit, formState: { errors },} = useForm();
+  //   const {signin, errors: signinErrors, isAuthenticated} = useAuth();
+  //   const email = useRef(null)
+  //   const password = useRef(null)
+  
+  //   const navigate = useNavigate()
+
+  // /*const onSubmit = handleSubmit((data) => {
+  //   signin(data);
+  //   console.log(data);
+  // })*/
+
+  // const onSubmit = (e) => {
+  //   e.preventDefault()
+  //   console.log(email.current.value,password.current.value);
+  //   const data = {email:email.current.value, password:password.current.value}
+  //   axios.post('https://events-cqtw.onrender.com/login',data)
+  //   .then(res => {
+  //     const token = res.data.token;
+  //     console.log(token);
+  //     document.cookie = `token=${token}; path=/`;
+  //   })
+  //   .catch(error => console.log(error))
+  // }
+  
+
+  //  useEffect(() => {
+  //   if (isAuthenticated) navigate("/events")
+  // },[isAuthenticated])
+
   const {register, handleSubmit, formState: { errors },} = useForm();
     const {signin, errors: signinErrors, isAuthenticated} = useAuth();
-    const email = useRef(null)
-    const password = useRef(null)
-  
+
     const navigate = useNavigate()
 
-  /*const onSubmit = handleSubmit((data) => {
+  const onSubmit = handleSubmit((data) => {
     signin(data);
-    console.log(data);
-  })*/
+  })
 
-  const onSubmit = (e) => {
-    e.preventDefault()
-    console.log(email.current.value,password.current.value);
-    const data = {email:email.current.value, password:password.current.value}
-    axios.post('https://events-cqtw.onrender.com/login',data)
-    .then(res => {
-      const token = res.data.token;
-      console.log(token);
-      document.cookie = `token=${token}; path=/`;
-    })
-    .catch(error => console.log(error))
-  }
-  
-
-   useEffect(() => {
+  useEffect(() => {
     if (isAuthenticated) navigate("/events")
   },[isAuthenticated])
 
