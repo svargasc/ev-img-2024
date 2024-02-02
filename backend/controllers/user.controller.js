@@ -62,7 +62,7 @@ export const login = async (req, res) => {
 
       // Establecer cookie con el token
       res.cookie("token", token, {
-        domain: 'events-cqtw.onrender.com',
+        domain: '.onrender.com',
         path: '/',
         // otras opciones de cookie si es necesario
       });

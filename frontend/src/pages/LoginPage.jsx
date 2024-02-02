@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import logoeventBrew from '../img/logoeventsBrew.png'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useAuth } from '../context/AuthContext';
-
+import axios from 'axios';
 
 function LoginPage() {
 
@@ -27,7 +27,7 @@ function LoginPage() {
     .then(res => {
       const token = res.data.token;
       console.log(token);
-      document.cookie = `token=${token} : path=/`
+      document.cookie = `token=${token}; path=/`;
     })
     .catch(error => console.log(error))
   }
