@@ -14,6 +14,7 @@ export const auth = (req, res, next) => {
       if (err) return res.status(403).json({ message: "Invalid token" });
       
       req.username = username; 
+      res.cookie('token', token)
       console.log("Decoded User:", username); 
       next();
     });
