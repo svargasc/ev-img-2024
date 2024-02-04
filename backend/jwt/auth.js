@@ -12,10 +12,10 @@ export const auth = (req, res, next) => {
 
     jwt.verify(token, TOKEN_SECRET, (err, username) => {
       if (err) return res.status(403).json({ message: "Invalid token" });
-      
-      req.username = username; 
-      res.cookie('token', token)
-      console.log("Decoded User:", username); 
+
+      req.username = username;
+      res.cookie("token", token);
+      console.log("Decoded User:", username);
       next();
     });
   } catch (error) {
