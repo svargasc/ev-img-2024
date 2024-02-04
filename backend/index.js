@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["https://clever-parfait-80b841.netlify.app"],
+    origin: ["*"],
     methods: ["POST", "GET", "DELETE", "PUT"],
     credentials: true,
   })

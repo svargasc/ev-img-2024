@@ -66,6 +66,7 @@ export const login = async (req, res) => {
       // Crear token
       const token = await createAccesToken({ id: user.id });
       res.cookie("token", token);
+      console.log(res.cookie);
       // res.cookie("token", token, {
       //   domain: ".onrender.com",
       //   path: "/",
