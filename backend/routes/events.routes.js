@@ -13,10 +13,10 @@ import {
 } from "../controllers/events.controller.js";
 import { auth } from "../jwt/auth.js";
 import { updateEventImage } from "../controllers/events.controller.js";
-
+import { verifyToken } from "../controllers/user.controller.js";
 const router = Router();
 
-router.get("/events", auth, getEvents);
+router.get("/events", verifyToken, getEvents);
 router.get("/events/:id", auth, getEvent);
 router.get("/eventsClients", getEventsClients);
 router.post("/events", auth, createEvent);
