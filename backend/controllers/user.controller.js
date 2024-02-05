@@ -110,6 +110,7 @@ export const verifyToken = (req, res) => {
         id: user.id,
         username: user.username,
         email: user.email,
+        token: token
       });
     } catch (error) {
       console.error("Error verifying token:", error);
