@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { createAccesToken } from "../jwt/jwt.js";
 import { TOKEN_SECRET } from "../config.js";
-import Cookies from "js-cookie";
 
 const saltRounds = 10;
 
@@ -90,8 +89,8 @@ export const logout = (req, res) => {
 };
 
 export const verifyToken = async (req, res, next) => {
-  const token = Cookies.get('miToken');
-  // const token = req.headers[`authorization`];
+  // const token = req.cookies.token;
+  const token = req.headers[`authorization`];
 
   if (!token) {
     return res.status(401).json({ message: "Unauthorized 1" });
