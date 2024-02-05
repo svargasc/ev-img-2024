@@ -71,7 +71,7 @@ export const login = async (req, res) => {
       //   domain: ".onrender.com",
       //   path: "/",
       // });
-      res.json({ Status: "Success Login", user });
+      res.json({ Status: "Success Login", user, 'token':token });
     } else {
       return res.json({ Error: "Password not matched" });
     }
