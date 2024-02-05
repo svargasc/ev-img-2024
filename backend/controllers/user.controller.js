@@ -91,10 +91,10 @@ export const logout = (req, res) => {
 export const verifyToken = (req, res) => {
   const { token } = req.cookies;
 
-  if (!token) return res.status(401).json({ message: "Unauthorized" });
+  if (!token) return res.status(401).json({ message: "Unauthorized 1" });
 
   jwt.verify(token, TOKEN_SECRET, async (err, decodedToken) => {
-    if (err) return res.status(401).json({ message: "Unauthorized" });
+    if (err) return res.status(401).json({ message: "Unauthorized 2" });
 
     try {
       const { id } = decodedToken;
