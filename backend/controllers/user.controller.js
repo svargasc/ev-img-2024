@@ -88,16 +88,20 @@ export const logout = (req, res) => {
   return res.sendStatus(200);
 };
 
-export const verifyToken = (req, res) => {
-  const { token } = req.cookies;
+export const verifyToken = async (req, res, next) => {
+  const token = req.cookies.token;
 
-  if (!token) return res.status(401).json({ message: "Unauthorized 1" });
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized 1" });
+  }
 
-  jwt.verify(token, TOKEN_SECRET, async (err, decodedToken) => {
-    if (err) return res.status(401).json({ message: "Unauthorized 2" });
+  jwt.verify(token, TOKEN_SECRET, async (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: "Unauthorized 2" });
+    }
 
     try {
-      const { id } = decodedToken;
+      const id = decoded.id;
       const userQuery = "SELECT * FROM users WHERE id = ?";
       const [userData] = await pool.query(userQuery, [id]);
 
@@ -106,18 +110,15 @@ export const verifyToken = (req, res) => {
       }
 
       const user = userData[0];
-      return res.json({
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        token: token
-      });
+      req.user = user; // Añade el objeto de usuario a la solicitud
+      next(); // Llama al siguiente middleware
     } catch (error) {
       console.error("Error verifying token:", error);
       return res.status(500).json({ message: "Internal Server Error" });
     }
   });
 };
+
 
 export const profile = (req, res) => {
   console.log(req.username);
