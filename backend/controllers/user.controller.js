@@ -61,12 +61,14 @@ export const login = async (req, res) => {
       const user = {
         id: data[0].id,
         username: data[0].username,
+        email: data[0].email,
+        password: data[0].password,
       };
 
-      // Crear token
       const token = await createAccesToken({ id: user.id });
       res.cookie("token", token);
       console.log(token);
+      // Crear token
       // res.cookie("token", token, {
       //   domain: ".onrender.com",
       //   path: "/",
@@ -89,8 +91,8 @@ export const logout = (req, res) => {
 };
 
 export const verifyToken = async (req, res, next) => {
-  // const token = req.cookies.token;
-  const token = req.headers[`authorization`];
+  const token = req.cookies.token;
+  // const token = req.headers[`authorization`];
 
   if (!token) {
     return res.status(401).json({ message: "Unauthorized 1" });
