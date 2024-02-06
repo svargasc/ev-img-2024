@@ -78,35 +78,29 @@ export const login = async (req, res) => {
   }
 };
 
-export const logout = (req, res) => {
-  res.cookie("token", "", {
-    expires: new Date(0),
-  });
-  return res.sendStatus(200);
-};
 
 export const verifyToken = async (req, res, next) => {
   // const token = req.cookies.token;
   const token = req.headers['authorization'];
-
+  
   if (!token) {
     return res.status(401).json({ message: "Unauthorized 1" });
   }
-
+  
   jwt.verify(token, TOKEN_SECRET, async (err, decoded) => {
     if (err) {
       return res.status(401).json({ message: "Unauthorized 2" });
     }
-
+    
     try {
       const id = decoded.id;
       const userQuery = "SELECT * FROM users WHERE id = ?";
       const [userData] = await pool.query(userQuery, [id]);
-
+      
       if (userData.length === 0) {
         return res.status(404).json({ message: "User not found" });
       }
-
+      
       const user = userData[0];
       req.user = user; // Añade el objeto de usuario a la solicitud
       next(); // Llama al siguiente middleware
@@ -117,6 +111,12 @@ export const verifyToken = async (req, res, next) => {
   });
 };
 
+export const logout = (req, res) => {
+  res.cookie("token", "", {
+    expires: new Date(0),
+  });
+  return res.sendStatus(200);
+};
 
 export const profile = (req, res) => {
   console.log(req.username);
