@@ -68,11 +68,6 @@ export const login = async (req, res) => {
       const token = await createAccesToken({ id: user.id });
       res.cookie("token", token);
       console.log(token);
-      // Crear token
-      // res.cookie("token", token, {
-      //   domain: ".onrender.com",
-      //   path: "/",
-      // });
       res.json({ Status: "Success Login", user, 'token':token });
     } else {
       return res.json({ Error: "Password not matched" });
@@ -91,8 +86,8 @@ export const logout = (req, res) => {
 };
 
 export const verifyToken = async (req, res, next) => {
-  const token = req.cookies.token;
-  // const token = req.headers[`authorization`];
+  // const token = req.cookies.token;
+  const token = req.headers['authorization'];
 
   if (!token) {
     return res.status(401).json({ message: "Unauthorized 1" });
