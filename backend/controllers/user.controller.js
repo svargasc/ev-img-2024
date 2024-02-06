@@ -66,7 +66,12 @@ export const login = async (req, res) => {
       };
 
       const token = await createAccesToken({ id: user.id });
-      res.cookie("token", token);
+      res.cookie('token', token, {
+        httpOnly: true, // La cookie solo puede ser accedida a través de HTTP
+        secure: true, // La cookie solo se enviará a través de conexiones HTTPS seguras
+        sameSite: 'None', // La cookie se enviará en solicitudes de origen cruzado (CORS)
+        maxAge: 3600, // Duración de la cookie en segundos (aquí, 1 hora)
+      });
       console.log(token);
       res.json({ Status: "Success Login", user, 'token':token });
     } else {
