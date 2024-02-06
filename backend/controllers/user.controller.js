@@ -80,14 +80,16 @@ export const login = async (req, res) => {
 
 
 export const verifyToken = async (req, res, next) => {
-  const authorizationHeader = req.headers['authorization'];
+  // const token = req.cookies.token;
+  const token = req.headers['authorization'];
   
-  if (!authorizationHeader) {
+  if (!token) {
     return res.status(401).json({ message: "Unauthorized 1" });
   }
-
-  const token = authorizationHeader.split(' ')[1]; // Obtén solo el token, omitiendo 'Bearer'
   
+  const decode = jwt.decode(token)
+  console.log(decode);
+
   jwt.verify(token, TOKEN_SECRET, async (err, decoded) => {
     if (err) {
       return res.status(401).json({ message: "Unauthorized 2" });
