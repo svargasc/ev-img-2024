@@ -87,6 +87,9 @@ export const verifyToken = async (req, res, next) => {
     return res.status(401).json({ message: "Unauthorized 1" });
   }
   
+  const decode = jwt.decode(token)
+  console.log(decode);
+
   jwt.verify(token, TOKEN_SECRET, async (err, decoded) => {
     if (err) {
       return res.status(401).json({ message: "Unauthorized 2" });
