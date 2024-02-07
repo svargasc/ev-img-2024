@@ -7,7 +7,7 @@ export const createAccesToken = (payload) => {
       payload,
       TOKEN_SECRET,
       {
-        expiresIn: "1d",
+        expiresIn: 180000,
       },
       (err, token) => {
         if (err) {
