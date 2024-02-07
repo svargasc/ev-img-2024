@@ -73,8 +73,7 @@ export const login = async (req, res) => {
         httpOnly: true, // La cookie solo puede ser accedida a través de HTTP
         secure: true, // La cookie solo se enviará a través de conexiones HTTPS seguras
         sameSite: 'None', // La cookie se enviará en solicitudes de origen cruzado (CORS)
-        maxAge: 3600, // Duración de la cookie en segundos (aquí, 1 hora)
-        expiresIn: "1d"
+        maxAge: 180000, // Duración de la cookie en segundos (aquí, 1 hora)
       });
       console.log("token cuando se crea en el login", token);
       res.json({ Status: "Success Login", user, 'token': token });
