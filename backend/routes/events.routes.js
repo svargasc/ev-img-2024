@@ -17,7 +17,7 @@ import { verifyToken } from "../controllers/user.controller.js";
 
 const router = Router();
 
-router.get("/events", getEvents);
+router.get("/events", verifyToken, getEvents);
 router.get("/events/:id", auth, getEvent);
 router.get("/eventsClients", getEventsClients);
 router.post("/events", auth, createEvent);
@@ -38,3 +38,4 @@ router.put(
 ); //Ruta para subir mas imagenes del evento
 export default router;
 
+// router.put("/events/:id/image", auth, updateEventImage);  // Ruta para actualizar la imagen
