@@ -72,8 +72,8 @@ export const login = async (req, res) => {
         sameSite: 'None', // La cookie se enviará en solicitudes de origen cruzado (CORS)
         maxAge: 3600, // Duración de la cookie en segundos (aquí, 1 hora)
       });
-      console.log(token);
-      res.json({ Status: "Success Login", user, 'token':token });
+      console.log("token cuando se crea en el login", token);
+      res.json({ Status: "Success Login", user, 'token': token });
     } else {
       return res.json({ Error: "Password not matched" });
     }
@@ -86,27 +86,28 @@ export const login = async (req, res) => {
 
 export const verifyToken = async (req, res, next) => {
   const authorizationHeader = req.headers['authorization'];
-  
+  // const { authorizationHeader } = req.cookies;
+  console.log("Token en los headers cuando se verifica", authorizationHeader);
   if (!authorizationHeader) {
     return res.status(401).json({ message: "Unauthorized 1" });
   }
 
   const token = authorizationHeader.split(' ')[1]; // Obtén solo el token, omitiendo 'Bearer'
-  
+
   jwt.verify(token, TOKEN_SECRET, async (err, decoded) => {
     if (err) {
       return res.status(401).json({ message: "Unauthorized 2" });
     }
-    
+
     try {
       const id = decoded.id;
       const userQuery = "SELECT * FROM users WHERE id = ?";
       const [userData] = await pool.query(userQuery, [id]);
-      
+
       if (userData.length === 0) {
         return res.status(404).json({ message: "User not found" });
       }
-      
+
       const user = userData[0];
       req.user = user; // Añade el objeto de usuario a la solicitud
       next(); // Llama al siguiente middleware

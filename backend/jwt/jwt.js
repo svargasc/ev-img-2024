@@ -10,8 +10,12 @@ export const createAccesToken = (payload) => {
         expiresIn: "1d",
       },
       (err, token) => {
-        if (err) reject(err);
-        resolve(token);
+        if (err) {
+          reject(err);
+        } else {
+          resolve(token);
+          console.log("Token cuando se crea el acceso",token);
+        }
       }
     );
   });
