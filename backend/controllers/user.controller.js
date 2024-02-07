@@ -65,10 +65,10 @@ export const login = async (req, res) => {
         password: data[0].password,
       };
 
-      // const token = await createAccesToken({ id: user });
-      const token = jwt.sign(user, TOKEN_SECRET || "secret-key", {
-        expiresIn: "1d",
-      });
+      const token = await createAccesToken({ id: user });
+      // const token = jwt.sign(user, TOKEN_SECRET || "secret-key", {
+      //   expiresIn: "1d",
+      // });
       res.cookie('token', token, {
         httpOnly: true, // La cookie solo puede ser accedida a través de HTTP
         secure: true, // La cookie solo se enviará a través de conexiones HTTPS seguras
