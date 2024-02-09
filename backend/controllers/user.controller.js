@@ -65,18 +65,13 @@ export const login = async (req, res) => {
         password: data[0].password,
       };
 
-      const token = await createAccesToken({ id: user });
-      // const token = jwt.sign(user, TOKEN_SECRET || "secret-key", {
-      //   expiresIn: "1d",
-      // });
-      res.cookie('token', token, {
-        httpOnly: true, // La cookie solo puede ser accedida a través de HTTP
-        secure: true, // La cookie solo se enviará a través de conexiones HTTPS seguras
-        sameSite: 'None', // La cookie se enviará en solicitudes de origen cruzado (CORS)
-        maxAge: 86400000, // Duración de la cookie en segundos (aquí, 1 hora)
+      jwt.sign(user, TOKEN_SECRET, (err, token) => {
+        if (err) {
+          res.status(400).send({ msg: "Error" });
+        } else {
+          res.send({ msg: "success login user", user, token: token });
+        }
       });
-      console.log("token cuando se crea en el login", token);
-      res.json({ Status: "Success Login", user, 'token': token });
     } else {
       return res.json({ Error: "Password not matched" });
     }
@@ -88,14 +83,14 @@ export const login = async (req, res) => {
 
 
 export const verifyToken = async (req, res, next) => {
-  const authorizationHeader = req.headers['authorization'];
-  // const { authorizationHeader } = req.cookies;
+  const authorizationHeader = req.headers["authorization"];
+
   console.log("Token en los headers cuando se verifica", authorizationHeader);
   if (!authorizationHeader) {
     return res.status(401).json({ message: "Unauthorized 1" });
   }
 
-  const token = authorizationHeader.split(' ')[1]; // Obtén solo el token, omitiendo 'Bearer'
+  const token = authorizationHeader.split(" ")[1];
 
   jwt.verify(token, TOKEN_SECRET, async (err, decoded) => {
     if (err) {
@@ -105,15 +100,15 @@ export const verifyToken = async (req, res, next) => {
     try {
       const id = decoded.id;
       const userQuery = "SELECT * FROM users WHERE id = ?";
-      const [userData] = await pool.query(userQuery, [id]);
+      const [usertData] = await pool.query(userQuery, [id]);
 
-      if (userData.length === 0) {
+      if (userQuery.length === 0) {
         return res.status(404).json({ message: "User not found" });
       }
 
-      const user = userData[0];
-      req.user = user; // Añade el objeto de usuario a la solicitud
-      next(); // Llama al siguiente middleware
+      const user = usertData[0];
+      req.user = user;
+      next();
     } catch (error) {
       console.error("Error verifying token:", error);
       return res.status(500).json({ message: "Internal Server Error" });

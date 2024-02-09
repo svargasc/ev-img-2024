@@ -37,3 +37,13 @@ CREATE TABLE event_images (
   image_url VARCHAR(255),
   FOREIGN KEY (event_id) REFERENCES events(id)
 );
+
+CREATE TABLE comments (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  event_id INT,
+  client_id INT,
+  comment_text TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (event_id) REFERENCES events(id),
+  FOREIGN KEY (client_id) REFERENCES clients(id)
+);

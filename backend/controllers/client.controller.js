@@ -1,6 +1,7 @@
 import { pool } from "../db/db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { TOKEN_SECRET } from "../config.js";
 
 const saltRounds = 10;
 
@@ -40,7 +41,7 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     // Obtener usuario por email
-    const sql = "SELECT * FROM clients WHERE email = ?";
+    const sql = "SELECT id, name, email, password FROM clients WHERE email = ?";
     const [data] = await pool.query(sql, [email]);
 
     if (data.length === 0) {
@@ -54,25 +55,85 @@ export const login = async (req, res) => {
     );
 
     if (passwordMatch) {
-      const user = {
+      const client = {
         id: data[0].id,
         name: data[0].name,
+        email: data[0].email,
       };
 
-      // Crear token
-      const token = jwt.sign(user, process.env.JWT_SECRET || "secret-key", {
-        expiresIn: "1d",
+      jwt.sign(client, TOKEN_SECRET, (err, token) => {
+        if (err) {
+          res.status(400).send({ msg: "Error" });
+        } else {
+          res.send({ msg: "success login client", token: token });
+        }
       });
-
-      // Establecer cookie con el token
-      res.cookie("token", token);
-
-      return res.json({ Status: "Success client!" });
     } else {
       return res.json({ Error: "Password not matched" });
     }
   } catch (error) {
     console.error("Error in login client:", error);
     return res.json({ Error: "Login client error in server" });
+  }
+};
+
+// Agregar comentario a un evento
+export const addComment = async (req, res) => {
+  try {
+    const { event_id, comment_text } = req.body;
+    const { id: client_id } = req.client; // Aquí obtenemos el id del cliente
+
+    const insertQuery =
+      "INSERT INTO comments (event_id, client_id, comment_text) VALUES (?, ?, ?)";
+    await pool.query(insertQuery, [event_id, client_id, comment_text]);
+
+    return res.json({
+      Status: "Success",
+      Message: "Comment added successfully",
+    });
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    return res.status(500).json({ Error: "Failed to add comment" });
+  }
+};
+
+
+// Actualizar comentario
+export const updateComment = async (req, res) => {
+  try {
+    const { comment_text } = req.body;
+    const { comment_id } = req.params;
+    const { id: client_id } = req.client; // Obteniendo el ID del cliente desde el token
+
+    const updateQuery =
+      "UPDATE comments SET comment_text = ? WHERE id = ? AND client_id = ?";
+    await pool.query(updateQuery, [comment_text, comment_id, client_id]);
+
+    return res.json({
+      Status: "Success",
+      Message: "Comment updated successfully",
+    });
+  } catch (error) {
+    console.error("Error updating comment:", error);
+    return res.status(500).json({ Error: "Failed to update comment" });
+  }
+};
+
+//Eliminar comentario
+export const deleteComment = async (req, res) => {
+  try {
+    const { comment_id } = req.params;
+    const { id: client_id } = req.client; // Obteniendo el ID del cliente desde el token
+
+    const deleteQuery = "DELETE FROM comments WHERE id = ? AND client_id = ?";
+    await pool.query(deleteQuery, [comment_id, client_id]);
+
+    return res.json({
+      Status: "Success",
+      Message: "Comment deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    return res.status(500).json({ Error: "Failed to delete comment" });
   }
 };
