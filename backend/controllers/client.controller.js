@@ -81,7 +81,7 @@ export const login = async (req, res) => {
 export const getClientComments = async (req, res) => {
   try {
     const [result] = await pool.query(
-      "SELECT * FROM comments ORDER BY dates ASC"
+      "SELECT * FROM comments ORDER BY created_at ASC"
     );
 
     res.json(result);
