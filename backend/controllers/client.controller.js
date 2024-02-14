@@ -77,6 +77,37 @@ export const login = async (req, res) => {
   }
 };
 
+//Leer comentarios
+export const getClientComments = async (req, res) => {
+  try {
+    const [result] = await pool.query(
+      "SELECT * FROM comments ORDER BY dates ASC"
+    );
+
+    res.json(result);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// Obtener comentarios de un cliente específico
+export const getOneClientComment = async (req, res) => {
+  try {
+    const { id: client_id } = req.client; // Obteniendo el ID del cliente desde el token
+
+    const selectQuery = "SELECT * FROM comments WHERE client_id = ?";
+    const [comments] = await pool.query(selectQuery, [client_id]);
+
+    return res.json({
+      Status: "Success",
+      Comments: comments,
+    });
+  } catch (error) {
+    console.error("Error retrieving client comments:", error);
+    return res.status(500).json({ Error: "Failed to retrieve client comments" });
+  }
+};
+
 // Agregar comentario a un evento
 export const addComment = async (req, res) => {
   try {

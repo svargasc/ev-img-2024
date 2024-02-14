@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { verifyClients } from "../jwt/verify.token.clients.js";
-import { login, register, addComment, updateComment, deleteComment } from "../controllers/client.controller.js";
+import { login, register, addComment, updateComment, deleteComment, getClientComments } from "../controllers/client.controller.js";
 
 const router = Router();
 router.get("/clientVerify", verifyClients, (req, res) => {
@@ -13,6 +13,8 @@ router.get("/logoutClients", (req, res) => {
   return res.json({ Status: "Success bye client!" });
 });
 
+//Leer comentarios
+router.get("/comments", getClientComments);
 // Agregar comentario a un evento
 router.post("/comments", verifyClients, addComment);
 
