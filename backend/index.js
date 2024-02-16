@@ -25,6 +25,11 @@ app.options('/upload', (req, res) => {
   res.status(200).send();
 });
 
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Credentials', true);
+  next();
+});
+
 app.put('/upload', (req, res) => {
   // Implementa lógica de actualización aquí
   res.status(200).send('Actualización exitosa');

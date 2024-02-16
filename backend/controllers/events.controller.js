@@ -18,7 +18,7 @@ export const upload = multer({ storage: storage });
 
 export const getEvents = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user;
 
     const [result] = await pool.query(
       "SELECT * FROM events WHERE user_id = ? ORDER BY dates ASC",
