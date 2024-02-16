@@ -108,6 +108,7 @@ export const verifyToken = async (req, res, next) => {
 
       const user = usertData[0];
       req.user = user;
+      res.json({message: "ok"})
       next();
     } catch (error) {
       console.error("Error verifying token:", error);

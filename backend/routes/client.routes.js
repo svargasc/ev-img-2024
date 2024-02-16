@@ -3,9 +3,7 @@ import { verifyClients } from "../jwt/verify.token.clients.js";
 import { login, register, addComment, updateComment, deleteComment, getClientComments } from "../controllers/client.controller.js";
 
 const router = Router();
-router.get("/clientVerify", verifyClients, (req, res) => {
-  return res.json({ Status: "Success client", name: req.name });
-});
+router.get("/clientVerify", verifyClients);
 router.post("/registerClients", register);
 router.post("/loginClients", login);
 router.get("/logoutClients", (req, res) => {

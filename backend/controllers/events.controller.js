@@ -47,7 +47,7 @@ export const getEvent = async (req, res) => {
 export const createEvent = async (req, res) => {
   try {
     const { title, description, address, dates } = req.body;
-    const userId = req.user.id; // Obtenemos el user_id del usuario autenticado
+    const userId = req.user; // Obtenemos el user_id del usuario autenticado
 
     const [result] = await pool.query(
       "INSERT INTO events(title, description, address, dates, user_id) VALUES (?, ?, ?, ?, ?)",
