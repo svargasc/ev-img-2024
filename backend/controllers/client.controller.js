@@ -80,8 +80,11 @@ export const login = async (req, res) => {
 //Leer comentarios
 export const getClientComments = async (req, res) => {
   try {
+    const { event_id } = req.query; // Obtener el ID del evento de la consulta
+
     const [result] = await pool.query(
-      "SELECT * FROM comments ORDER BY created_at ASC"
+      "SELECT * FROM comments WHERE event_id = ? ORDER BY created_at ASC",
+      [event_id]
     );
 
     res.json(result);
