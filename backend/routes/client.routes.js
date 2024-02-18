@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { verifyClients } from "../jwt/verify.token.clients.js";
-import { login, register, addComment, updateComment, deleteComment, getClientComments } from "../controllers/client.controller.js";
+import { login, register, addComment, updateComment, deleteComment, getClientComments, contact } from "../controllers/client.controller.js";
 
 const router = Router();
 router.get("/clientVerify", verifyClients);
@@ -21,5 +21,8 @@ router.put("/comments/:comment_id", verifyClients, updateComment);
 
 // Eliminar comentario
 router.delete("/comments/:comment_id", verifyClients, deleteComment);
+
+//Correo de contacto
+router.post("/contact", contact);
 
 export default router;

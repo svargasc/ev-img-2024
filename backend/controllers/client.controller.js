@@ -2,6 +2,23 @@ import { pool } from "../db/db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { TOKEN_SECRET } from "../config.js";
+import nodemailer from "nodemailer";
+import { google } from "googleapis";
+
+const CLIENT_ID =
+  "602930957404-088lft3lh5rlo7b4e9kqatpbcop38u3c.apps.googleusercontent.com";
+const CLIENT_SECRET = "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";
+const REDIRECT_URI = "https://developers.google.com/oauthplayground";
+const REFRESH_TOKEN =
+  "1//04F9389OiNHZKCgYIARAAGAQSNwF-L9IrxOFVJ8-2baQDmVmIc3D3_BaExM-eGrgpES-qwWUzHLZtazfOui8aypT54g2ADAmmvEM";
+
+const oAuth2Client = new google.auth.OAuth2(
+  CLIENT_ID,
+  CLIENT_SECRET,
+  REDIRECT_URI
+);
+
+oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 const saltRounds = 10;
 
@@ -113,7 +130,6 @@ export const addComment = async (req, res) => {
   }
 };
 
-
 // Actualizar comentario
 export const updateComment = async (req, res) => {
   try {
@@ -151,5 +167,36 @@ export const deleteComment = async (req, res) => {
   } catch (error) {
     console.error("Error deleting comment:", error);
     return res.status(500).json({ Error: "Failed to delete comment" });
+  }
+};
+
+export const contact = async (req, res) => {
+  try {
+    const { name, email, content } = req.body;
+    const insertQuery =
+      "INSERT INTO contact (`name`, `email`, `content`) VALUES (?, ?, ?)";
+    await pool.query(insertQuery, [name, email, content]);
+    const accessToken = oAuth2Client.getAccessToken();
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        type: "OAuth2",
+        user: "eventsbrews@gmail.com",
+        clientId: CLIENT_ID,
+        clientSecret: CLIENT_SECRET,
+        refreshToken: REFRESH_TOKEN,
+        accessToken: accessToken,
+      },
+    });
+    transporter.sendMail({
+      from: "eventsbrews@gmail.com",
+      to: email,
+      subject: `${name} gracias por contactarnos!`,
+      html: "<h1>EventsBrews</h1> <br/> <h2>Nos pondremos en contact contigo lo mas pronto posible</h2>",
+    });
+    return res.json({ Status: "Success" });
+  } catch (error) {
+    console.error("Error in contact:", error);
+    return res.json({ Error: "Contact error in server" });
   }
 };
