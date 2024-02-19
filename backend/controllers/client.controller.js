@@ -3,22 +3,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { TOKEN_SECRET } from "../config.js";
 import nodemailer from "nodemailer";
-import { google } from "googleapis";
-
-const CLIENT_ID =
-  "602930957404-088lft3lh5rlo7b4e9kqatpbcop38u3c.apps.googleusercontent.com";
-const CLIENT_SECRET = "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";
-const REDIRECT_URI = "https://developers.google.com/oauthplayground";
-const REFRESH_TOKEN =
-  "1//04F9389OiNHZKCgYIARAAGAQSNwF-L9IrxOFVJ8-2baQDmVmIc3D3_BaExM-eGrgpES-qwWUzHLZtazfOui8aypT54g2ADAmmvEM";
-
-const oAuth2Client = new google.auth.OAuth2(
-  CLIENT_ID,
-  CLIENT_SECRET,
-  REDIRECT_URI
-);
-
-oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 const saltRounds = 10;
 
@@ -176,23 +160,20 @@ export const contact = async (req, res) => {
     const insertQuery =
       "INSERT INTO contact (`name`, `email`, `content`) VALUES (?, ?, ?)";
     await pool.query(insertQuery, [name, email, content]);
-    const accessToken = oAuth2Client.getAccessToken();
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 587,
       auth: {
-        type: "OAuth2",
         user: "eventsbrews@gmail.com",
-        clientId: CLIENT_ID,
-        clientSecret: CLIENT_SECRET,
-        refreshToken: REFRESH_TOKEN,
-        accessToken: accessToken,
+        pass: "yrfy ukhf qzqg ioxc",
       },
     });
     transporter.sendMail({
-      from: "eventsbrews@gmail.com",
-      to: email,
-      subject: `${name} gracias por contactarnos!`,
-      html: "<h1>EventsBrews</h1> <br/> <h2>Nos pondremos en contact contigo lo mas pronto posible</h2>",
+      from: `${email}`,
+      to: "eventsbrews@gmail.com",
+      subject: `Hola,${name} quiere contactarnos para agregar eventos!`,
+      html: `<h1>Contactate con ${name}</h1> <br/> <h2>Esta persona quiere contactarte para agregar eventos, 
+      comunicate con él/la por medio del correo ${email}</h2>`,
     });
     return res.json({ Status: "Success" });
   } catch (error) {
