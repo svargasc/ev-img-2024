@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verifyClients } from "../jwt/verify.token.clients.js";
+import verifyCli, { verifyClients } from "../jwt/verify.token.clients.js";
 import { login, register, addComment, updateComment, deleteComment, getClientComments, contact } from "../controllers/client.controller.js";
 
 const router = Router();
@@ -14,13 +14,13 @@ router.get("/logoutClients", (req, res) => {
 //Leer comentarios
 router.get("/comments", getClientComments);
 // Agregar comentario a un evento
-router.post("/comments", verifyClients, addComment);
+router.post("/comments", verifyCli, addComment);
 
 // Actualizar comentario
-router.put("/comments/:comment_id", verifyClients, updateComment);
+router.put("/comments/:comment_id", verifyCli, updateComment);
 
 // Eliminar comentario
-router.delete("/comments/:comment_id", verifyClients, deleteComment);
+router.delete("/comments/:comment_id", verifyCli, deleteComment);
 
 //Correo de contacto
 router.post("/contact", contact);
