@@ -66,7 +66,7 @@ export const login = async (req, res) => {
         if (err) {
           res.status(400).send({ msg: "Error" });
         } else {
-          res.send({ msg: "success login client", token: token });
+          res.send({ msg: "success login client", client, token: token });
         }
       });
     } else {
