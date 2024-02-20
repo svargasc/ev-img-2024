@@ -157,6 +157,9 @@ export const deleteComment = async (req, res) => {
 export const contact = async (req, res) => {
   try {
     const { name, email, content } = req.body;
+    if (!name || !email || !content) {
+      return res.status(400).json({ Error: "Todos los campos son requeridos" });
+    }
     const insertQuery =
       "INSERT INTO contact (`name`, `email`, `content`) VALUES (?, ?, ?)";
     await pool.query(insertQuery, [name, email, content]);
