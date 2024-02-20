@@ -28,6 +28,7 @@ export const verifyClients = async (req, res, next) => {
 
       const client = clientData[0];
       req.client = client;
+      res.json({ message: "ok" })
       next();
     } catch (error) {
       console.error("Error verifying token:", error);
