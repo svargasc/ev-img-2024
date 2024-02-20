@@ -22,7 +22,7 @@ export const verifyClients = async (req, res, next) => {
       const clientQuery = "SELECT * FROM clients WHERE id = ?";
       const [clientData] = await pool.query(clientQuery, [id]);
 
-      if (clientData.length === 0) {
+      if (clientQuery.length === 0) {
         return res.status(404).json({ message: "Client not found" });
       }
 
