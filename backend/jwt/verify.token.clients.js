@@ -38,7 +38,7 @@ export const verifyClients = async (req, res, next) => {
 };
 
 
-const verifyCli = (req, res, next) => {
+export const verifyCli = (req, res, next) => {
   const authorizationHeader = req.headers["authorization"];
 
   console.log("Token en los headers cuando se verifica", authorizationHeader);
@@ -60,5 +60,3 @@ const verifyCli = (req, res, next) => {
     });
   }
 };
-
-export default verifyCli;

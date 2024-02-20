@@ -1,5 +1,6 @@
 import { Router } from "express";
-import verifyCli, { verifyClients } from "../jwt/verify.token.clients.js";
+import {verifyClients } from "../jwt/verify.token.clients.js";
+import {verifyCli } from "../jwt/verify.token.clients.js";
 import { login, register, addComment, updateComment, deleteComment, getClientComments, contact } from "../controllers/client.controller.js";
 
 const router = Router();
