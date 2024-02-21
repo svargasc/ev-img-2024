@@ -112,16 +112,15 @@ export const addComment = async (req, res) => {
       const result = await model.generateContent(msg);
       const response = await result.response;
       const text = response.text();
-      if (text == "A favor") {
+      if (text === "A favor") {
         const insertQuery =
-          `INSERT INTO comments (possitive_comments) VALUES (${comment_text})`;
-        await pool.query(insertQuery, [comment_text]);
+          `UPDATE comments SET possitive_comments = ? WHERE comment_text = ?`;
+        await pool.query(insertQuery, [comment_text, comment_text]);
         console.log("El comentario es a favor");
-      }
-      if (text == "En contra") {
+      } else if (text === "En contra") {
         const insertQuery =
-          `INSERT INTO comments (negative_comments) VALUES (${comment_text})`;
-        await pool.query(insertQuery, [comment_text]);
+          `UPDATE comments SET negative_comments = ? WHERE comment_text = ?`;
+        await pool.query(insertQuery, [comment_text, comment_text]);
         console.log("El comentario es en contra");
       }
     }
