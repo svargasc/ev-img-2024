@@ -148,6 +148,28 @@ export const updateComment = async (req, res) => {
     const updateQuery = "UPDATE comments SET comment_text = ? WHERE id = ?";
     await pool.query(updateQuery, [comment_text, comment_id]);
 
+    //IA
+    async function classify_text(msg) {
+      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      const result = await model.generateContent(msg);
+      const response = await result.response;
+      const text = response.text();
+      if (text === "A favor") {
+        const insertQuery =
+          `UPDATE comments SET possitive_comments = ? WHERE comment_text = ?`;
+        await pool.query(insertQuery, [comment_text, comment_text]);
+        console.log("El comentario es a favor");
+      } else if (text === "En contra") {
+        const insertQuery =
+          `UPDATE comments SET negative_comments = ? WHERE comment_text = ?`;
+        await pool.query(insertQuery, [comment_text, comment_text]);
+        console.log("El comentario es en contra");
+      }
+    }
+
+    const co = `Clasifica el siguiente comentario como A favor o En contra del evento ${comment_text}:`;
+    classify_text(`${co} ${comment_text}`);
+
     return res.json({
       Status: "Success",
       Message: "Comment updated successfully",
