@@ -141,7 +141,7 @@ export const addComment = async (req, res) => {
 // Actualizar comentario
 export const updateComment = async (req, res) => {
   try {
-    const { comment_text} = req.body;
+    const { comment_text, client_id } = req.body;
     const { comment_id } = req.params;
 
     // Actualizar el comentario en la base de datos
