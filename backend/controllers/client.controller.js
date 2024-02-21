@@ -143,11 +143,10 @@ export const updateComment = async (req, res) => {
   try {
     const { comment_text } = req.body;
     const { comment_id } = req.params;
-    const { id: client_id } = req.client; // Obteniendo el ID del cliente desde el token
 
-    const updateQuery =
-      "UPDATE comments SET comment_text = ? WHERE id = ? AND client_id = ?";
-    await pool.query(updateQuery, [comment_text, comment_id, client_id]);
+    // Actualizar el comentario en la base de datos
+    const updateQuery = "UPDATE comments SET comment_text = ? WHERE id = ?";
+    await pool.query(updateQuery, [comment_text, comment_id]);
 
     return res.json({
       Status: "Success",
