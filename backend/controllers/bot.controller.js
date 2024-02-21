@@ -1,18 +1,16 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(API_KEY_GEMINI);
 const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-import { Router } from "express";
-const router = Router();
 
 
 //Config
 const API_KEY_GEMINI = "AIzaSyBC2HGD0k0nn3ElSvHd01iI6wdnz8Ri_mM";
 const GENERATION_CONFIG = {
-  stopSequences: ["red"],
-  maxOutputTokens: 1000,
-  temperature: 0.9,
-  topP: 0.1,
-  topK: 16,
+    stopSequences: ["red"],
+    maxOutputTokens: 1000,
+    temperature: 0.9,
+    topP: 0.1,
+    topK: 16,
 };
 const START_CHAT = [
     {
@@ -42,26 +40,26 @@ const START_CHAT = [
         **Administración de Eventos:** Los organizadores pueden crear y administrar eventos a través de una interfaz de administración.
         **Documentación y Ayuda:** Se proporciona información de ayuda y documentación para guiar a los usuarios.
         `,
-      },
-      {
+    },
+    {
         role: "model",
         parts: "Genial empresa!",
-      }
+    }
 ]
 
 //route
-router.post('/chat', async (req, res) => {
+export const chat = async (req, res) => {
     let history = req.body.history;
     let question = req.body.question;
     let historyChat = START_CHAT.concat(history)
     const chat = model.startChat({
-      history: historyChat,
-      generationConfig: GENERATION_CONFIG
+        history: historyChat,
+        generationConfig: GENERATION_CONFIG
     });
     const sendQuestion = await chat.sendMessage(question);
     const response = await sendQuestion.response;
     const text = response.text();
-    history.push({role: "user", parts: question})
-    history.push({role: "model", parts: text})
-    return res.status(200).json({history: history});
-  })
+    history.push({ role: "user", parts: question })
+    history.push({ role: "model", parts: text })
+    return res.status(200).json({ history: history });
+}
