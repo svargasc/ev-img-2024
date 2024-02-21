@@ -137,41 +137,6 @@ export const addComment = async (req, res) => {
     return res.status(500).json({ Error: "Failed to add comment" });
   }
 };
-// export const addComment = async (req, res) => {
-//   try {
-//     const { event_id, comment_text } = req.body;
-//     const { id: client_id } = req.client; // Aquí obtenemos el id del cliente
-
-//     //IA
-
-//     async function classify_text(msg) {
-//       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-//       const result = await model.generateContent(msg);
-//       const response = await result.response;
-//       const text = response.text();
-//       if (text == "A favor") {
-//         const insertQuery =
-//           "INSERT INTO comments (event_id, client_id, comment_text) VALUES (?, ?, ?)";
-//         await pool.query(insertQuery, [event_id, client_id, comment_text]);
-//         console.log("El comentario es a favor");
-//       }
-//       if (text == "En contra") {
-//         console.log("El comentario es en contra");
-//       }
-//     }
-
-//     const co = `Clasifica el siguiente comentario como A favor o En contra del evento ${comment_text}:`;
-//     classify_text(`${co} ${comment_text}`);
-
-//     return res.json({
-//       Status: "Success",
-//       Message: "Comment added successfully",
-//     });
-//   } catch (error) {
-//     console.error("Error adding comment:", error);
-//     return res.status(500).json({ Error: "Failed to add comment" });
-//   }
-// };
 
 // Actualizar comentario
 export const updateComment = async (req, res) => {
