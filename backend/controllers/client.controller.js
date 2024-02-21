@@ -101,7 +101,7 @@ export const getClientComments = async (req, res) => {
 export const addComment = async (req, res) => {
   try {
     const { event_id, comment_text } = req.body;
-    const { id: client_id } = req.client; // Aquí obtenemos el id del cliente
+    const { id: client_id } = decoded.id; // Aquí obtenemos el id del cliente
 
     const insertQuery =
       "INSERT INTO comments (event_id, client_id, comment_text) VALUES (?, ?, ?)";
