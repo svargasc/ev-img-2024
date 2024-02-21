@@ -27,7 +27,7 @@ export const verifyClients = async (req, res, next) => {
       }
 
       const client = clientData[0];
-      req.client = client;
+      req.client = decoded.id;
       res.json({message: "ok client", client})
       next();
     } catch (error) {
