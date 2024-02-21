@@ -202,11 +202,11 @@ export const updateComment = async (req, res) => {
 
 export const deleteComment = async (req, res) => {
   try {
-    const [result] = await pool.query("DELETE FROM comments WHERE id = ?", [
+    const [result] = await pool.query("DELETE FROM comments WHERE id = ? ", [
       req.params.id,
     ]);
     if (result.affectedRows === 0)
-      return res.status(404).json({ message: "Event not found" });
+      return res.status(404).json({ message: "Comment not found" });
     return res.sendStatus(204);
   } catch (error) {
     return res.status(500).json({ message: error.message });
