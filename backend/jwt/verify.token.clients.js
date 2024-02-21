@@ -85,10 +85,11 @@ export const verifyCli = (req, res, next) => {
   if (!token) {
     return res.json({ Error: "You are not authenticated" });
   } else {
-    jwt.verify(token, TOKEN_SECRET, (err, decoded) => { // Usar TOKEN_SECRET en lugar de process.env.JWT_SECRET || "secret-key"
+    jwt.verify(token, TOKEN_SECRET, (err, decoded) => {
       if (err) {
         return res.json({ Error: "Token is not okay" });
       } else {
+        // Agrega el ID del cliente decodificado al objeto `req`
         req.client = decoded.id;
         next();
       }
