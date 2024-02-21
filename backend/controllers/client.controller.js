@@ -202,16 +202,26 @@ export const updateComment = async (req, res) => {
 
 export const deleteComment = async (req, res) => {
   try {
-    const [result] = await pool.query("DELETE FROM comments WHERE id = ? ", [
-      req.params.id,
-    ]);
-    if (result.affectedRows === 0)
+    // Obtén el ID del comentario de los parámetros de la solicitud
+    const commentId = req.params.comment_id;
+
+    // Realiza la consulta para eliminar el comentario con el ID proporcionado
+    const [result] = await pool.query("DELETE FROM comments WHERE id = ?", [commentId]);
+
+    // Verifica si se encontró y eliminó correctamente el comentario
+    if (result.affectedRows === 0) {
+      // Si no se encontró ningún comentario con el ID proporcionado, devuelve un mensaje de error
       return res.status(404).json({ message: "Comment not found" });
+    }
+
+    // Devuelve un código de estado 204 para indicar que la eliminación se realizó con éxito
     return res.sendStatus(204);
   } catch (error) {
+    // Si ocurre algún error durante el proceso de eliminación, devuelve un mensaje de error
     return res.status(500).json({ message: error.message });
   }
 };
+
 
 export const contact = async (req, res) => {
   try {
