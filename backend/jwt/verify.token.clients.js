@@ -5,7 +5,6 @@ import { pool } from "../db/db.js";
 export const verifyClients = async (req, res, next) => {
   const authorizationHeader = req.headers["authorization"];
 
-  console.log("Token en los headers cuando se verifica", authorizationHeader);
   if (!authorizationHeader) {
     return res.status(401).json({ message: "Unauthorized 1" });
   }
@@ -22,13 +21,12 @@ export const verifyClients = async (req, res, next) => {
       const clientQuery = "SELECT * FROM clients WHERE id = ?";
       const [clientData] = await pool.query(clientQuery, [id]);
 
-      if (clientQuery.length === 0) {
+      if (clientData.length === 0) {
         return res.status(404).json({ message: "Client not found" });
       }
 
       const client = clientData[0];
-      req.client = decoded.id;
-      res.json({message: "ok client", client})
+      req.client = client;
       next();
     } catch (error) {
       console.error("Error verifying token:", error);
@@ -36,6 +34,7 @@ export const verifyClients = async (req, res, next) => {
     }
   });
 };
+
 
 
 export const verifyCli = (req, res, next) => {
