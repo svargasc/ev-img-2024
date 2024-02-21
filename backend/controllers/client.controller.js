@@ -141,12 +141,12 @@ export const addComment = async (req, res) => {
 // Actualizar comentario
 export const updateComment = async (req, res) => {
   try {
-    const { comment_text, client_id } = req.body;
+    const { comment_text } = req.body;
     const { comment_id } = req.params;
 
     // Actualizar el comentario en la base de datos
-    const updateQuery = "UPDATE comments SET comment_text = ? WHERE id = ? && client_id = ?";
-    await pool.query(updateQuery, [comment_text, client_id, comment_id]);
+    const updateQuery = "UPDATE comments SET comment_text = ? WHERE id = ?";
+    await pool.query(updateQuery, [comment_text, comment_id]);
 
     //IA
     async function classify_text(msg) {
