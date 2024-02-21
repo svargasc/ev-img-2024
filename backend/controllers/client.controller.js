@@ -3,9 +3,9 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { TOKEN_SECRET } from "../config.js";
 import nodemailer from "nodemailer";
-// import { GoogleGenerativeAI } from "@google/generative-ai";
-// const API_KEY_GEMINI = "AIzaSyBC2HGD0k0nn3ElSvHd01iI6wdnz8Ri_mM";
-// const genAI = new GoogleGenerativeAI(API_KEY_GEMINI);
+import { GoogleGenerativeAI } from "@google/generative-ai";
+const API_KEY_GEMINI = "AIzaSyBC2HGD0k0nn3ElSvHd01iI6wdnz8Ri_mM";
+const genAI = new GoogleGenerativeAI(API_KEY_GEMINI);
 
 const saltRounds = 10;
 
@@ -101,11 +101,33 @@ export const getClientComments = async (req, res) => {
 export const addComment = async (req, res) => {
   try {
     const { event_id, client_id, comment_text } = req.body;
-    // const { id: client_id } = req.client; // Aquí obtenemos el id del cliente
 
     const insertQuery =
       "INSERT INTO comments (event_id, client_id, comment_text) VALUES (?, ?, ?)";
     await pool.query(insertQuery, [event_id, client_id, comment_text]);
+
+    //IA
+    async function classify_text(msg) {
+      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      const result = await model.generateContent(msg);
+      const response = await result.response;
+      const text = response.text();
+      if (text == "A favor") {
+        const insertQuery =
+          `INSERT INTO comments (possitive_comments) VALUES (${comment_text})`;
+        await pool.query(insertQuery, [comment_text]);
+        console.log("El comentario es a favor");
+      }
+      if (text == "En contra") {
+        const insertQuery =
+          `INSERT INTO comments (negative_comments) VALUES (${comment_text})`;
+        await pool.query(insertQuery, [comment_text]);
+        console.log("El comentario es en contra");
+      }
+    }
+
+    const co = `Clasifica el siguiente comentario como A favor o En contra del evento ${comment_text}:`;
+    classify_text(`${co} ${comment_text}`);
 
     return res.json({
       Status: "Success",
