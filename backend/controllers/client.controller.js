@@ -181,22 +181,35 @@ export const updateComment = async (req, res) => {
 };
 
 //Eliminar comentario
+// export const deleteComment = async (req, res) => {
+//   try {
+//     const { comment_id } = req.params; // Obtener el ID del comentario a eliminar
+//     const { client_id} = req.body;
+
+//     // Consultar la base de datos para eliminar el comentario
+//     const deleteQuery = "DELETE FROM comments WHERE id = ? AND client_id = ?";
+//     await pool.query(deleteQuery, [comment_id, client_id]);
+
+//     return res.json({
+//       Status: "Success",
+//       Message: "Comment deleted successfully",
+//     });
+//   } catch (error) {
+//     console.error("Error deleting comment:", error);
+//     return res.status(500).json({ Error: "Failed to delete comment" });
+//   }
+// };
+
 export const deleteComment = async (req, res) => {
   try {
-    const { comment_id } = req.params; // Obtener el ID del comentario a eliminar
-    const { client_id} = req.body;
-
-    // Consultar la base de datos para eliminar el comentario
-    const deleteQuery = "DELETE FROM comments WHERE id = ? AND client_id = ?";
-    await pool.query(deleteQuery, [comment_id, client_id]);
-
-    return res.json({
-      Status: "Success",
-      Message: "Comment deleted successfully",
-    });
+    const [result] = await pool.query("DELETE FROM comments WHERE id = ?", [
+      req.params.id,
+    ]);
+    if (result.affectedRows === 0)
+      return res.status(404).json({ message: "Event not found" });
+    return res.sendStatus(204);
   } catch (error) {
-    console.error("Error deleting comment:", error);
-    return res.status(500).json({ Error: "Failed to delete comment" });
+    return res.status(500).json({ message: error.message });
   }
 };
 
