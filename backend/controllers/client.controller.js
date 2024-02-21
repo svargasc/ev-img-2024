@@ -139,36 +139,62 @@ export const addComment = async (req, res) => {
 };
 
 // Actualizar comentario
+// export const updateComment = async (req, res) => {
+//   try {
+//     const { comment_text, client_id } = req.body;
+//     const { comment_id } = req.params;
+
+//     // Actualizar el comentario en la base de datos
+//     const updateQuery = "UPDATE comments SET comment_text = ? WHERE id = ?";
+//     await pool.query(updateQuery, [comment_text, comment_id]);
+
+//     //IA
+//     async function classify_text(msg) {
+//       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+//       const result = await model.generateContent(msg);
+//       const response = await result.response;
+//       const text = response.text();
+//       if (text === "A favor") {
+//         const insertQuery =
+//           `UPDATE comments SET possitive_comments = ? WHERE comment_text = ?`;
+//         await pool.query(insertQuery, [comment_text, comment_text]);
+//         console.log("El comentario es a favor");
+//       } else if (text === "En contra") {
+//         const insertQuery =
+//           `UPDATE comments SET negative_comments = ? WHERE comment_text = ?`;
+//         await pool.query(insertQuery, [comment_text, comment_text]);
+//         console.log("El comentario es en contra");
+//       }
+//     }
+
+//     const co = `Clasifica el siguiente comentario como A favor o En contra del evento ${comment_text}:`;
+//     classify_text(`${co} ${comment_text}`);
+
+//     return res.json({
+//       Status: "Success",
+//       Message: "Comment updated successfully",
+//     });
+//   } catch (error) {
+//     console.error("Error updating comment:", error);
+//     return res.status(500).json({ Error: "Failed to update comment" });
+//   }
+// };
+
 export const updateComment = async (req, res) => {
   try {
-    const { comment_text, client_id } = req.body;
+    const { comment_text } = req.body;
     const { comment_id } = req.params;
+    const clientId = req.client; // Obtener el ID del cliente desde req.client
 
-    // Actualizar el comentario en la base de datos
-    const updateQuery = "UPDATE comments SET comment_text = ? WHERE id = ?";
-    await pool.query(updateQuery, [comment_text, comment_id]);
+    // Actualizar el comentario en la base de datos solo si pertenece al cliente que realiza la solicitud
+    const updateQuery = "UPDATE comments SET comment_text = ? WHERE id = ? AND client_id = ?";
+    const [result] = await pool.query(updateQuery, [comment_text, comment_id, clientId]);
 
-    //IA
-    async function classify_text(msg) {
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-      const result = await model.generateContent(msg);
-      const response = await result.response;
-      const text = response.text();
-      if (text === "A favor") {
-        const insertQuery =
-          `UPDATE comments SET possitive_comments = ? WHERE comment_text = ?`;
-        await pool.query(insertQuery, [comment_text, comment_text]);
-        console.log("El comentario es a favor");
-      } else if (text === "En contra") {
-        const insertQuery =
-          `UPDATE comments SET negative_comments = ? WHERE comment_text = ?`;
-        await pool.query(insertQuery, [comment_text, comment_text]);
-        console.log("El comentario es en contra");
-      }
+    // Verificar si se encontró y actualizó correctamente el comentario
+    if (result.affectedRows === 0) {
+      // Si no se encontró ningún comentario con el ID proporcionado para el cliente actual, devuelve un mensaje de error
+      return res.status(404).json({ message: "Comment not found or unauthorized" });
     }
-
-    const co = `Clasifica el siguiente comentario como A favor o En contra del evento ${comment_text}:`;
-    classify_text(`${co} ${comment_text}`);
 
     return res.json({
       Status: "Success",
