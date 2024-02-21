@@ -184,10 +184,11 @@ export const updateComment = async (req, res) => {
 export const deleteComment = async (req, res) => {
   try {
     const { comment_id } = req.params; // Obtener el ID del comentario a eliminar
+    const { client_id} = req.body;
 
     // Consultar la base de datos para eliminar el comentario
-    const deleteQuery = "DELETE FROM comments WHERE id = ?";
-    await pool.query(deleteQuery, [comment_id]);
+    const deleteQuery = "DELETE FROM comments WHERE id = ? && client_id = ?";
+    await pool.query(deleteQuery, [comment_id, client_id]);
 
     return res.json({
       Status: "Success",
