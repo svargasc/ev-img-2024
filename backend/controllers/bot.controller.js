@@ -1,8 +1,10 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
 
-//Config
 const API_KEY_GEMINI = "AIzaSyBC2HGD0k0nn3ElSvHd01iI6wdnz8Ri_mM";
+const genAI = new GoogleGenerativeAI(API_KEY_GEMINI)
+const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+//Config
 const GENERATION_CONFIG = {
     stopSequences: ["red"],
     maxOutputTokens: 1000,
@@ -10,9 +12,8 @@ const GENERATION_CONFIG = {
     topP: 0.1,
     topK: 16,
 };
-const genAI = new GoogleGenerativeAI(API_KEY_GEMINI);
-const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-const START_CHAT = [
+
+    const START_CHAT = [
     {
         role: "user",
         parts: `Nombre de la Empresa: EventsBrews
@@ -30,15 +31,24 @@ const START_CHAT = [
         y la exploración de nuevas experiencias.
         
         Qué puedo hacer en EvenstBrews:
-        **Registro de Usuarios:** Permite a los usuarios crear cuentas con información de perfil.
-        **Iniciar Sesión:** Los usuarios pueden iniciar sesión en sus cuentas de forma segura.
-        **Exploración de Eventos:** Los usuarios pueden navegar y buscar eventos.
-        **Detalles de Eventos:** Los usuarios pueden ver información detallada sobre eventos, incluyendo título, descripción, fecha, hora, ubicación, precio y más.
-        **Comentarios y Calificaciones:** Los usuarios pueden dejar comentarios y calificaciones sobre eventos y establecimientos.
-        **Edición de Perfil:** Los usuarios pueden editar su información de perfil, incluyendo nombre, foto de perfil, etc.
-        **Seguridad de Datos:** Se implementan medidas de seguridad para proteger la información del usuario.
-        **Administración de Eventos:** Los organizadores pueden crear y administrar eventos a través de una interfaz de administración.
-        **Documentación y Ayuda:** Se proporciona información de ayuda y documentación para guiar a los usuarios.
+        En EvenstBrews puedes hacer lo siguiente:
+        Registro de Usuarios: 
+        Permite a los usuarios crear cuentas con información de perfil.
+        Iniciar Sesión: 
+        Los usuarios pueden iniciar sesión en sus cuentas de forma segura.
+        Exploración de Eventos: 
+        Los usuarios pueden navegar y buscar eventos.
+        Detalles de Eventos: 
+        Los usuarios pueden ver información detallada sobre eventos, incluyendo título, descripción, fecha, hora, ubicación, precio y más.
+        Comentarios y Calificaciones: 
+        Los usuarios pueden dejar comentarios y calificaciones sobre eventos y establecimientos.
+        Edición de Perfil: 
+        Los usuarios pueden editar su información de perfil, incluyendo nombre, foto de perfil, etc.
+        Seguridad de Datos: 
+        Se implementan medidas de seguridad para proteger la información del usuario.
+        Administración de Eventos: 
+        Los organizadores pueden crear y administrar eventos a través de una interfaz de administración.
+        Documentación y Ayuda: Se proporciona información de ayuda y documentación para guiar a los usuarios.
         `,
     },
     {
