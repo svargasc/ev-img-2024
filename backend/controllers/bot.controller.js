@@ -21,14 +21,11 @@ const GENERATION_CONFIG = {
         Fecha de Creación: EventsBrews fue desarrollado desde 2023 al 2024 por unos estudiantes de desarrollo de software en el Sena.
         
         Descripción General:
-        La vida social contemporánea es impulsada por la búsqueda constante de nuevas y emocionantes experiencias. Los cafés y bares se han convertido en espacios vibrantes 
+        Los cafés y bares se han convertido en espacios vibrantes 
         que albergan una amplia gama de eventos, desde actuaciones en vivo y exposiciones artísticas hasta noches temáticas y charlas educativas. Sin embargo, a menudo, 
         las personas no tienen acceso fácil a información actualizada sobre estos eventos o pueden perderse oportunidades únicas debido a la falta de visibilidad.
-        EventsBrews se erige como la solución a este desafío. Con un enfoque en la comodidad y la accesibilidad, nuestra aplicación proporciona a los clientes una 
-        ventana abierta a un mundo de experiencias en tiempo real. EventsBrew es una aplicación innovadora diseñada para transformar la experiencia de los clientes 
-        en cafés y bares, proporcionando un método efectivo para mantener a las personas informadas sobre los eventos y actividades que se llevan a cabo en estos lugares. 
-        Con la creciente importancia de los eventos y la vida social en estos establecimientos, EventsBrew busca brindar una plataforma que promueva la participación activa 
-        y la exploración de nuevas experiencias.
+        EventsBrew es una aplicación innovadora diseñada para transformar la experiencia de los clientes 
+        en cafés y bares, proporcionando un método efectivo para mantener a las personas informadas sobre los eventos y actividades que se llevan a cabo en estos lugares.
         
         Qué puedo hacer en EvenstBrews:
         En EvenstBrews puedes hacer lo siguiente:
@@ -49,6 +46,10 @@ const GENERATION_CONFIG = {
         Administración de Eventos: 
         Los organizadores pueden crear y administrar eventos a través de una interfaz de administración.
         Documentación y Ayuda: Se proporciona información de ayuda y documentación para guiar a los usuarios.
+        Como puedo agregar mis eventos:
+        Para agregar eventos de tu empresa o establecimiento, primero debes ir al final del aplicativo y 
+        llenar el formulario de contacto, luego de ello te contactaras con nosotros (EventsBrews) y te diremos 
+        como podras tener el acceso para poder crear y añadir tus propios eventos!
         `,
     },
     {
