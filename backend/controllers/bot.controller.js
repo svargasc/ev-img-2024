@@ -15,7 +15,7 @@ const GENERATION_CONFIG = {
 
     const START_CHAT = [
     {
-        role: "You",
+        role: "user",
         parts: `Nombre de la Empresa: EventsBrews
   
         Fecha de Creación: EventsBrews fue desarrollado desde 2023 al 2024 por unos estudiantes de desarrollo de software en el Sena.
@@ -53,7 +53,7 @@ const GENERATION_CONFIG = {
         `,
     },
     {
-        role: "EventsBrews",
+        role: "model",
         parts: "Hola!",
     }
 ]
@@ -70,7 +70,7 @@ export const chat = async (req, res) => {
     const sendQuestion = await chat.sendMessage(question);
     const response = await sendQuestion.response;
     const text = response.text();
-    history.push({ role: "You", parts: question })
-    history.push({ role: "EventsBrews", parts: text })
+    history.push({ role: "user", parts: question })
+    history.push({ role: "model", parts: text })
     return res.status(200).json({ history: history });
 }
