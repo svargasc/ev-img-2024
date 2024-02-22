@@ -1,6 +1,4 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-const genAI = new GoogleGenerativeAI(API_KEY_GEMINI);
-const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
 
 //Config
@@ -12,6 +10,8 @@ const GENERATION_CONFIG = {
     topP: 0.1,
     topK: 16,
 };
+const genAI = new GoogleGenerativeAI(API_KEY_GEMINI);
+const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 const START_CHAT = [
     {
         role: "user",
@@ -43,7 +43,7 @@ const START_CHAT = [
     },
     {
         role: "model",
-        parts: "Genial empresa!",
+        parts: "Hola!",
     }
 ]
 
