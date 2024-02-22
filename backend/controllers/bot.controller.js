@@ -46,10 +46,16 @@ const GENERATION_CONFIG = {
         Administración de Eventos: 
         Los organizadores pueden crear y administrar eventos a través de una interfaz de administración.
         Documentación y Ayuda: Se proporciona información de ayuda y documentación para guiar a los usuarios.
+
         Como puedo agregar mis eventos:
         Para agregar eventos de tu empresa o establecimiento, primero debes ir al final del aplicativo y 
         llenar el formulario de contacto, luego de ello te contactaras con nosotros (EventsBrews) y te diremos 
         como podras tener el acceso para poder crear y añadir tus propios eventos!
+
+        Como puedo registrarme:
+        Para registrarte debes ir primero al boton registrar en la parte superior de la derecha, dar click 
+        y esto te redireccionara a un formulario, el cual debes llenar. Seguido de esto podras acceder al formulario 
+        de inicio se sesión y tendras acceso a los comentarios!
         `,
     },
     {
