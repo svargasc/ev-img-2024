@@ -47,3 +47,10 @@ CREATE TABLE comments (
   FOREIGN KEY (event_id) REFERENCES events(id),
   FOREIGN KEY (client_id) REFERENCES clients(id)
 );
+
+CREATE TABLE contact (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(50),
+  email VARCHAR(50),
+  content TEXT
+)
