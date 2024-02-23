@@ -7,8 +7,8 @@ const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 //Config
 const GENERATION_CONFIG = {
     stopSequences: ["red"],
-    maxOutputTokens: 500,
-    temperature: 0.2,
+    maxOutputTokens: 1000,
+    temperature: 0.1,
     topP: 0.1,
     topK: 16,
 };
@@ -20,7 +20,7 @@ const GENERATION_CONFIG = {
   
         Fecha de Creación: EventsBrews fue desarrollado desde 2023 al 2024 por unos estudiantes de desarrollo de software en el Sena.
         
-        Descripción General:
+        Sobre EvenstBrews:
         Los cafés y bares se han convertido en espacios vibrantes 
         que albergan una amplia gama de eventos, desde actuaciones en vivo y exposiciones artísticas hasta noches temáticas y charlas educativas. Sin embargo, a menudo, 
         las personas no tienen acceso fácil a información actualizada sobre estos eventos o pueden perderse oportunidades únicas debido a la falta de visibilidad.
