@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["https://eventsbrewssj.netlify.app"],
+    origin: ["http://localhost:5173"],
     methods: ["POST", "GET", "DELETE", "PUT"],
     credentials: true,
   })
