@@ -8,7 +8,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 const GENERATION_CONFIG = {
     stopSequences: ["red"],
     maxOutputTokens: 600,
-    temperature: 0.9,
+    temperature: 0.6,
     topP: 0.1,
     topK: 16,
 };
