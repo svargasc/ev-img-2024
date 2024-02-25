@@ -8,7 +8,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 const GENERATION_CONFIG = {
     stopSequences: ["red"],
     maxOutputTokens: 1000,
-    temperature: 0.1,
+    temperature: 0.6,
     topP: 0.1,
     topK: 16,
 };
@@ -19,8 +19,9 @@ const GENERATION_CONFIG = {
         parts: `Nombre de la Empresa: EventsBrews
   
         Fecha de Creación: EventsBrews fue desarrollado desde 2023 al 2024 por unos estudiantes de desarrollo de software en el Sena.
+        Quienes lo crearon: Juan Guillermo Pantoja Castro, Sergio Y Díaz Castro y Sergio Vargas Castañeda.
         
-        Sobre EvenstBrews:
+        Descripción General:
         Los cafés y bares se han convertido en espacios vibrantes 
         que albergan una amplia gama de eventos, desde actuaciones en vivo y exposiciones artísticas hasta noches temáticas y charlas educativas. Sin embargo, a menudo, 
         las personas no tienen acceso fácil a información actualizada sobre estos eventos o pueden perderse oportunidades únicas debido a la falta de visibilidad.
@@ -29,20 +30,12 @@ const GENERATION_CONFIG = {
         
         Qué puedo hacer en EvenstBrews:
         En EvenstBrews puedes hacer lo siguiente:
-        Registro de Usuarios: 
-        Permite a los usuarios crear cuentas con información de perfil.
-        Iniciar Sesión: 
-        Los usuarios pueden iniciar sesión en sus cuentas de forma segura.
-        Exploración de Eventos: 
-        Los usuarios pueden navegar y buscar eventos.
-        Detalles de Eventos: 
-        Los usuarios pueden ver información detallada sobre eventos, incluyendo título, descripción, fecha, hora, ubicación, precio y más.
-        Comentarios y Calificaciones: 
-        Los usuarios pueden dejar comentarios y calificaciones sobre eventos y establecimientos.
-        Edición de Perfil: 
-        Los usuarios pueden editar su información de perfil, incluyendo nombre, foto de perfil, etc.
+        Permite a los clientes registrarse e iniciar sesión para poder hacer comentarios en los eventos, puede visualizar todo 
+        tipo de eventos que hayan sido creados, puden ver informacón detallada de cada evento.
+        
         Seguridad de Datos: 
         Se implementan medidas de seguridad para proteger la información del usuario.
+        
         Administración de Eventos: 
         Los organizadores pueden crear y administrar eventos a través de una interfaz de administración.
         Documentación y Ayuda: Se proporciona información de ayuda y documentación para guiar a los usuarios.
