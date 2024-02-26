@@ -147,43 +147,110 @@ export const getEventImages = async (req, res) => {
   }
 };
 
+// export const createEventImages = async (req, res) => {
+//   try {
+//     const eventId = req.body.eventId;
+//     const images = req.files.map((file) => file.filename);
+
+//     if (!eventId) {
+//       return res.status(400).json({ message: "Event ID is required" });
+//     }
+
+//     const insertQuery = "INSERT INTO event_images (event_id, image_url) VALUES ?";
+//     const imageValues = images.map((image) => [eventId, image]);
+
+//     await pool.query(insertQuery, [imageValues]);
+
+//     return res.json({ status: "Success" });
+//   } catch (error) {
+//     console.error("Error in uploadEventImages:", error);
+//     return res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };
+// Controlador para subir imágenes
 export const createEventImages = async (req, res) => {
   try {
-    const eventId = req.body.eventId;
-    const images = req.files.map((file) => file.filename);
+    const eventId = req.body.eventId; // Obtiene el ID del evento desde la solicitud
+    const images = req.files.map((file) => file.filename); // Obtiene los nombres de archivo de las imágenes cargadas
 
+    // Verifica si el ID del evento está presente en la solicitud
     if (!eventId) {
       return res.status(400).json({ message: "Event ID is required" });
     }
 
-    const insertQuery = "INSERT INTO event_images (event_id, image_url) VALUES ?";
+    // Verifica si se cargaron imágenes
+    if (!images || images.length === 0) {
+      return res.status(400).json({ message: "No images uploaded" });
+    }
+
+    // Prepara los valores de las imágenes para la inserción en la base de datos
     const imageValues = images.map((image) => [eventId, image]);
 
+    // Ejecuta la consulta para insertar las imágenes en la base de datos
+    const insertQuery = "INSERT INTO event_images (event_id, image_url) VALUES ?";
     await pool.query(insertQuery, [imageValues]);
 
-    return res.json({ status: "Success" });
+    // Devuelve una respuesta JSON indicando que la carga de imágenes fue exitosa
+    return res.json({ Status: "Success" });
   } catch (error) {
-    console.error("Error in uploadEventImages:", error);
+    console.error("Error in createEventImages:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
 
 export const updateEventImages = async (req, res) => {
   try {
-    const eventId = req.body.eventId;
-    const image = req.file.filename;
-    const imageNameToUpdate = req.body.imageNameToUpdate; // Nombre de la imagen a actualizar
+    const { eventId, imageIndex } = req.body;
+    const newImage = req.file.filename; // Nombre del nuevo archivo de imagen
 
-    if (!eventId || !imageNameToUpdate) {
-      return res.status(400).json({ message: "Event ID and image name are required" });
+    // Verificar si el ID del evento y el índice de la imagen están presentes
+    if (!eventId || isNaN(eventId) || imageIndex === undefined || isNaN(imageIndex)) {
+      return res.status(400).json({ message: "Event ID and image index are required" });
     }
 
-    const updateQuery = "UPDATE event_images SET image_url = ? WHERE event_id = ? AND image_url = ?";
-    await pool.query(updateQuery, [image, eventId, imageNameToUpdate]);
+    // Obtener el nombre de la imagen anterior en la posición específica (imageIndex) del evento
+    const [result] = await pool.query(
+      "SELECT image_url FROM event_images WHERE event_id = ? LIMIT ?, 1",
+      [eventId, imageIndex]
+    );
+
+    // Verificar si se encontró la imagen anterior en la base de datos
+    if (result.length === 0) {
+      return res.status(404).json({ message: "Previous image not found" });
+    }
+
+    const previousImage = result[0].image_url;
+
+    // Actualizar el nombre de la imagen en la base de datos
+    await pool.query(
+      "UPDATE event_images SET image_url = ? WHERE event_id = ? AND image_url = ?",
+      [newImage, eventId, previousImage]
+    );
 
     return res.json({ status: "Success" });
   } catch (error) {
-    console.error("Error in updateEventImage:", error);
+    console.error("Error in updateEventImages:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+// export const updateEventImages = async (req, res) => {
+//   try {
+//     const eventId = req.body.eventId;
+//     const image = req.file.filename;
+//     const imageNameToUpdate = req.body.imageNameToUpdate; // Nombre de la imagen a actualizar
+
+//     if (!eventId || !imageNameToUpdate) {
+//       return res.status(400).json({ message: "Event ID and image name are required" });
+//     }
+
+//     const updateQuery = "UPDATE event_images SET image_url = ? WHERE event_id = ? AND image_url = ?";
+//     await pool.query(updateQuery, [image, eventId, imageNameToUpdate]);
+
+//     return res.json({ status: "Success" });
+//   } catch (error) {
+//     console.error("Error in updateEventImage:", error);
+//     return res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };
