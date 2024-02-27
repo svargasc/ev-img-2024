@@ -36,4 +36,7 @@ router.put(
   upload.single("image"),
   updateEventImages
 ); //Ruta para subir mas imagenes del evento
+
+
+
 export default router;
