@@ -12,8 +12,15 @@ const GENERATION_CONFIG = {
     topP: 0.1,
     topK: 16,
 };
+const fechaActual = new Date();
 
-const dia = Date.now();
+// Obtener el día, mes y año
+const dia = fechaActual.getDate();
+const mes = fechaActual.getMonth() + 1; // Los meses van de 0 a 11, por eso se suma 1
+const año = fechaActual.getFullYear();
+
+// Formatear la fecha como string
+const fechaFormateada = `${año}-${mes < 10 ? '0' + mes : mes}-${dia < 10 ? '0' + dia : dia}`;
 
     const START_CHAT = [
     {
@@ -21,7 +28,7 @@ const dia = Date.now();
         parts: `Nombre de la Empresa: EventsBrews
 
         Solo responde preguntas acerca o sobre EventsBrews. Si hay preguntas que no tiene que ver con EventsBrews. Responde: No estoy autorizado para responder esas preguntas!
-        Fecha ${dia}
+        Fecha o día: ${fechaFormateada}
         Hola: Hola, como puedo ayudarte hoy?
 
         Fecha de Creación: EventsBrews fue desarrollado desde 2023 al 2024 por unos estudiantes de desarrollo de software en el Sena.
