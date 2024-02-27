@@ -13,13 +13,15 @@ const GENERATION_CONFIG = {
     topK: 16,
 };
 
+const dia = Date.now();
+
     const START_CHAT = [
     {
         role: "user",
         parts: `Nombre de la Empresa: EventsBrews
 
         Solo responde preguntas acerca o sobre EventsBrews. Si hay preguntas que no tiene que ver con EventsBrews. Responde: No estoy autorizado para responder esas preguntas!
-  
+        Fecha ${dia}
         Hola: Hola, como puedo ayudarte hoy?
 
         Fecha de Creación: EventsBrews fue desarrollado desde 2023 al 2024 por unos estudiantes de desarrollo de software en el Sena.
