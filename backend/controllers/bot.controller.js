@@ -17,6 +17,8 @@ const GENERATION_CONFIG = {
     {
         role: "user",
         parts: `Nombre de la Empresa: EventsBrews
+
+        Solo responde preguntas acerca o sobre EventsBrews. Si hay preguntas que no tiene que ver con EventsBrews. Responde: No estoy autorizado para responder esas preguntas!
   
         Fecha de Creación: EventsBrews fue desarrollado desde 2023 al 2024 por unos estudiantes de desarrollo de software en el Sena.
         Quienes lo crearon: Juan Guillermo Pantoja Castro, Sergio Y Díaz Castro y Sergio Vargas Castañeda.
