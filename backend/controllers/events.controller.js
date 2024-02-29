@@ -130,7 +130,7 @@ export const getEventsClients = async (req, res) => {
 
 export const getEventImages = async (req, res) => {
   try {
-    const eventId = req.params.eventId;
+    const eventId = req.params.eventId; // Obtener eventId de los parámetros de ruta
 
     if (!eventId) {
       return res.status(400).json({ message: "Event ID is required" });
