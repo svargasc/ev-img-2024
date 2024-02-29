@@ -111,17 +111,23 @@ export const addComment = async (req, res) => {
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
       const result = await model.generateContent(msg);
       const response = await result.response;
-      const text = response.text();
-      if (text === "A favor") {
-        const insertQuery =
-          `UPDATE comments SET possitive_comments = ? WHERE comment_text = ?`;
-        await pool.query(insertQuery, [comment_text, comment_text]);
-        console.log("El comentario es a favor");
-      } else if (text === "En contra") {
-        const insertQuery =
-          `UPDATE comments SET negative_comments = ? WHERE comment_text = ?`;
-        await pool.query(insertQuery, [comment_text, comment_text]);
-        console.log("El comentario es en contra");
+      try {
+        const text = response.text();
+        if (text === "A favor") {
+          const insertQuery = `UPDATE comments SET possitive_comments = ? WHERE comment_text = ?`;
+          await pool.query(insertQuery, [comment_text, comment_text]);
+          console.log("El comentario es a favor");
+        } else if (text === "En contra") {
+          const insertQuery = `UPDATE comments SET negative_comments = ? WHERE comment_text = ?`;
+          await pool.query(insertQuery, [comment_text, comment_text]);
+          console.log("El comentario es en contra");
+        }
+      } catch (error) {
+        console.log("Error al comentar el texto:", error);
+        // Eliminar el comentario en caso de error
+        const deleteQuery = `DELETE FROM comments WHERE comment_text = ?`;
+        await pool.query(deleteQuery, [comment_text]);
+        return res.status(600, console.log("statusss", res.status));
       }
     }
 
@@ -138,63 +144,74 @@ export const addComment = async (req, res) => {
   }
 };
 
-// Actualizar comentario
-// export const updateComment = async (req, res) => {
-//   try {
-//     const { comment_text, client_id } = req.body;
-//     const { comment_id } = req.params;
-
-//     // Actualizar el comentario en la base de datos
-//     const updateQuery = "UPDATE comments SET comment_text = ? WHERE id = ?";
-//     await pool.query(updateQuery, [comment_text, comment_id]);
-
-//     //IA
-//     async function classify_text(msg) {
-//       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-//       const result = await model.generateContent(msg);
-//       const response = await result.response;
-//       const text = response.text();
-//       if (text === "A favor") {
-//         const insertQuery =
-//           `UPDATE comments SET possitive_comments = ? WHERE comment_text = ?`;
-//         await pool.query(insertQuery, [comment_text, comment_text]);
-//         console.log("El comentario es a favor");
-//       } else if (text === "En contra") {
-//         const insertQuery =
-//           `UPDATE comments SET negative_comments = ? WHERE comment_text = ?`;
-//         await pool.query(insertQuery, [comment_text, comment_text]);
-//         console.log("El comentario es en contra");
-//       }
-//     }
-
-//     const co = `Clasifica el siguiente comentario como A favor o En contra del evento ${comment_text}:`;
-//     classify_text(`${co} ${comment_text}`);
-
-//     return res.json({
-//       Status: "Success",
-//       Message: "Comment updated successfully",
-//     });
-//   } catch (error) {
-//     console.error("Error updating comment:", error);
-//     return res.status(500).json({ Error: "Failed to update comment" });
-//   }
-// };
-
 export const updateComment = async (req, res) => {
   try {
     const { comment_text } = req.body;
     const { comment_id } = req.params;
     const clientId = req.client; // Obtener el ID del cliente desde req.client
 
+    // Obtener el comentario anterior para determinar la clasificación anterior
+    const selectQuery = "SELECT possitive_comments, negative_comments FROM comments WHERE id = ?";
+    const [result] = await pool.query(selectQuery, [comment_id]);
+    const previousPositiveComment = result[0].possitive_comments;
+    const previousNegativeComment = result[0].negative_comments;
+
     // Actualizar el comentario en la base de datos solo si pertenece al cliente que realiza la solicitud
-    const updateQuery = "UPDATE comments SET comment_text = ? WHERE id = ? AND client_id = ?";
-    const [result] = await pool.query(updateQuery, [comment_text, comment_id, clientId]);
+    const updateQuery =
+      "UPDATE comments SET comment_text = ? WHERE id = ? AND client_id = ?";
+    const [updateResult] = await pool.query(updateQuery, [
+      comment_text,
+      comment_id,
+      clientId,
+    ]);
 
     // Verificar si se encontró y actualizó correctamente el comentario
-    if (result.affectedRows === 0) {
+    if (updateResult.affectedRows === 0) {
       // Si no se encontró ningún comentario con el ID proporcionado para el cliente actual, devuelve un mensaje de error
-      return res.status(404).json({ message: "Comment not found or unauthorized" });
+      return res
+        .status(404)
+        .json({ message: "Comment not found or unauthorized" });
     }
+
+    // Clasificar el texto actualizado
+    async function classify_text(msg) {
+      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      const result = await model.generateContent(msg);
+      const response = await result.response;
+      try {
+        const text = response.text();
+        if (text === "A favor") {
+          // Actualizar la base de datos eliminando la marca "En contra" si existe
+          if (previousNegativeComment) {
+            const deleteQuery = `UPDATE comments SET negative_comments = NULL WHERE id = ?`;
+            await pool.query(deleteQuery, [comment_id]);
+          }
+          // Actualizar la base de datos con la nueva clasificación "A favor"
+          const updateQuery = `UPDATE comments SET possitive_comments = ? WHERE id = ?`;
+          await pool.query(updateQuery, [comment_text, comment_id]);
+          console.log("El comentario es a favor");
+        } else if (text === "En contra") {
+          // Actualizar la base de datos eliminando la marca "A favor" si existe
+          if (previousPositiveComment) {
+            const deleteQuery = `UPDATE comments SET possitive_comments = NULL WHERE id = ?`;
+            await pool.query(deleteQuery, [comment_id]);
+          }
+          // Actualizar la base de datos con la nueva clasificación "En contra"
+          const updateQuery = `UPDATE comments SET negative_comments = ? WHERE id = ?`;
+          await pool.query(updateQuery, [comment_text, comment_id]);
+          console.log("El comentario es en contra");
+        }
+      } catch (error) {
+        console.log("Error al comentar el texto:", error);
+        // Eliminar el comentario actualizado en caso de error
+        const deleteQuery = `DELETE FROM comments WHERE id = ?`;
+        await pool.query(deleteQuery, [comment_id]);
+        return res.json({ message: "Comment inapropiated" });
+      }
+    }
+
+    const co = `Clasifica el siguiente comentario como A favor o En contra del evento ${comment_text}:`;
+    classify_text(`${co} ${comment_text}`);
 
     return res.json({
       Status: "Success",
@@ -206,32 +223,17 @@ export const updateComment = async (req, res) => {
   }
 };
 
-//Eliminar comentario
-// export const deleteComment = async (req, res) => {
-//   try {
-//     const { comment_id } = req.params; // Obtener el ID del comentario a eliminar
-//     const { client_id} = req.body;
 
-//     // Consultar la base de datos para eliminar el comentario
-//     const deleteQuery = "DELETE FROM comments WHERE id = ? AND client_id = ?";
-//     await pool.query(deleteQuery, [comment_id, client_id]);
-
-//     return res.json({
-//       Status: "Success",
-//       Message: "Comment deleted successfully",
-//     });
-//   } catch (error) {
-//     console.error("Error deleting comment:", error);
-//     return res.status(500).json({ Error: "Failed to delete comment" });
-//   }
-// };
 
 export const deleteComment = async (req, res) => {
   try {
     const commentId = req.params.comment_id;
     const clientId = req.client; // Obteniendo el ID del cliente desde req.client
 
-    const [result] = await pool.query("DELETE FROM comments WHERE id = ? AND client_id = ?", [commentId, clientId]);
+    const [result] = await pool.query(
+      "DELETE FROM comments WHERE id = ? AND client_id = ?",
+      [commentId, clientId]
+    );
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Comment not found" });
