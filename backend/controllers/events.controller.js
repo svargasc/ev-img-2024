@@ -1,6 +1,8 @@
 import multer from "multer";
 import { pool } from "../db/db.js";
 import path from "path";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import fs from "fs";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -85,35 +87,99 @@ export const deleteEvent = async (req, res) => {
   }
 };
 
-export const updateEventImage = async (req, res) => {
-  try {
-    const eventId = req.body.eventId; // Cambiado a req.body
-    const image = req.file.filename;
+///////////////////////////////////////////////////////
 
-    // Verificar si el ID del evento está presente
+
+// Función para procesar la imagen y actualizar la base de datos según la respuesta
+async function run(imageFilename, eventId) {
+  try {
+    const API_KEY_GEMINI = "AIzaSyBC2HGD0k0nn3ElSvHd01iI6wdnz8Ri_mM";
+    const genAI = new GoogleGenerativeAI(API_KEY_GEMINI);
+
+    const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
+    const objeto = "Cafe, catacion, restaurantes, naturaleza o cafeterias";
+    const prompt = `Responde solo con Sí o solo con No en caso de que se encuentre o no se encuentre el objeto por el que te preguntan. ¿En la imagen hay un ${objeto}?`;
+
+    const imageParts = [
+      {
+        inlineData: {
+          data: Buffer.from(fs.readFileSync(`public/uploads/${imageFilename}`)).toString("base64"),
+          mimeType: "image/jpeg",
+        },
+      },
+    ];
+
+    const result = await model.generateContent([prompt, ...imageParts]);
+    const response = await result.response;
+    const text = await response.text();
+
+    let resultado;
+    if (text.trim() === "Sí" || text.trim()==="Sí hay") {
+      resultado = 1;
+      console.log("Se encontró el objeto en la imagen:", text);
+      await updateEventImage(eventId, imageFilename);
+    } else if (text.trim() === "No") {
+      resultado = 0;
+      console.log("No se encontró el objeto en la imagen:", text);
+      await deleteEventImage(eventId);
+    } else {
+      console.log("Respuesta desconocida:", text);
+      return;
+    }
+
+    console.log("Resultado:", resultado);
+  } catch (error) {
+    console.error("Error in run:", error);
+  }
+}
+
+// Función para actualizar la imagen en la base de datos
+async function updateEventImage(eventId, image) {
+  try {
+    const sql = "UPDATE events SET img_event = ? WHERE id = ?";
+    await pool.query(sql, [image, eventId]);
+    console.log("Imagen actualizada en la base de datos");
+  } catch (error) {
+    console.error("Error updating event image:", error);
+  }
+}
+
+// Función para eliminar la imagen de la base de datos
+async function deleteEventImage(req, res, eventId) {
+  try {
+    const sql = "UPDATE events SET img_event = NULL WHERE id = ?";
+    await pool.query(sql, [eventId]);
+    console.log("Imagen eliminada de la base de datos");
+    res.json({message: "Image deleted"})
+  } catch (error) {
+    console.error("Error deleting event image:", error);
+  }
+}
+
+// Controlador para subir imágenes y procesarlas
+export const updateEventImageHandler = async (req, res) => {
+  try {
+    const eventId = req.body.eventId;
+    const imageFilename = req.file.filename;
+
     if (!eventId) {
       return res.status(400).json({ message: "Event ID is required" });
     }
 
-    const sql = "UPDATE events SET img_event = ? WHERE id = ?";
+    await run(imageFilename, eventId);
 
-    await pool.query(sql, [image, eventId], (err, result) => {
-      if (err) {
-        console.error("Error updating event image:", err);
-        return res.status(500).json({ message: "Internal Server Error" });
-      }
-
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: "Event not found" });
-      }
-
-      return res.json({ Status: "Success" });
-    });
+    return res.json({ Status: "Success" });
   } catch (error) {
-    console.error("Error in updateEventImage:", error);
+    console.error("Error in updateEventImageHandler:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
+
+///////////////////////////////////////////////////////
+
+
 
 export const getEventsClients = async (req, res) => {
   try {
@@ -147,26 +213,6 @@ export const getEventImages = async (req, res) => {
   }
 };
 
-// export const createEventImages = async (req, res) => {
-//   try {
-//     const eventId = req.body.eventId;
-//     const images = req.files.map((file) => file.filename);
-
-//     if (!eventId) {
-//       return res.status(400).json({ message: "Event ID is required" });
-//     }
-
-//     const insertQuery = "INSERT INTO event_images (event_id, image_url) VALUES ?";
-//     const imageValues = images.map((image) => [eventId, image]);
-
-//     await pool.query(insertQuery, [imageValues]);
-
-//     return res.json({ status: "Success" });
-//   } catch (error) {
-//     console.error("Error in uploadEventImages:", error);
-//     return res.status(500).json({ message: "Internal Server Error" });
-//   }
-// };
 // Controlador para subir imágenes
 export const createEventImages = async (req, res) => {
   try {
@@ -200,6 +246,7 @@ export const createEventImages = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 
 
 
@@ -238,22 +285,3 @@ export const updateEventImages = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
-// export const updateEventImages = async (req, res) => {
-//   try {
-//     const eventId = req.body.eventId;
-//     const image = req.file.filename;
-//     const imageNameToUpdate = req.body.imageNameToUpdate; // Nombre de la imagen a actualizar
-
-//     if (!eventId || !imageNameToUpdate) {
-//       return res.status(400).json({ message: "Event ID and image name are required" });
-//     }
-
-//     const updateQuery = "UPDATE event_images SET image_url = ? WHERE event_id = ? AND image_url = ?";
-//     await pool.query(updateQuery, [image, eventId, imageNameToUpdate]);
-
-//     return res.json({ status: "Success" });
-//   } catch (error) {
-//     console.error("Error in updateEventImage:", error);
-//     return res.status(500).json({ message: "Internal Server Error" });
-//   }
-// };
