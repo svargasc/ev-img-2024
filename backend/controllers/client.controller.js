@@ -121,13 +121,18 @@ export const addComment = async (req, res) => {
           const insertQuery = `UPDATE comments SET negative_comments = ? WHERE comment_text = ?`;
           await pool.query(insertQuery, [comment_text, comment_text]);
           console.log("El comentario es en contra");
+        } else {
+          // Eliminar el comentario si no es clasificado correctamente
+          const deleteQuery = `DELETE FROM comments WHERE comment_text = ?`;
+          await pool.query(deleteQuery, [comment_text]);
+          return res.status(400).json({ Error: "Comment not classified correctly" });
         }
       } catch (error) {
         console.log("Error al comentar el texto:", error);
         // Eliminar el comentario en caso de error
         const deleteQuery = `DELETE FROM comments WHERE comment_text = ?`;
         await pool.query(deleteQuery, [comment_text]);
-        return res.status(500).json({Error: "Comment inapropiated"})
+        return res.status(500).json({ Error: "Comment inapropiated" });
       }
     }
 
@@ -143,6 +148,7 @@ export const addComment = async (req, res) => {
     return res.status(500).json({ Error: "Failed to add comment" });
   }
 };
+
 
 export const updateComment = async (req, res) => {
   try {
