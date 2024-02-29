@@ -127,7 +127,7 @@ export const addComment = async (req, res) => {
         // Eliminar el comentario en caso de error
         const deleteQuery = `DELETE FROM comments WHERE comment_text = ?`;
         await pool.query(deleteQuery, [comment_text]);
-        return res.status(600, console.log("statusss", res.status));
+        return res.status(500).json({Error: "Comment inapropiated"})
       }
     }
 
