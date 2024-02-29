@@ -27,7 +27,7 @@ router.post("/upload", upload.single("image"), updateEventImage); // Ruta para a
 router.get("/events/:eventId/images", getEventImages);
 router.post(
   "/uploadImages",
-  upload.array("images", 3),
+  upload.array("images", 10),
   createEventImages
 );
 router.put(
