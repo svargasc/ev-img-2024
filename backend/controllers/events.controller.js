@@ -121,7 +121,7 @@ async function run(imageFilename, eventId) {
     } else if (text.trim() === "No") {
       resultado = 0;
       console.log("No se encontró el objeto en la imagen:", text);
-      await deleteEventImage(req, res, eventId);
+      await deleteEventImage(res, eventId);
     } else {
       console.log("Respuesta desconocida:", text);
       return;
@@ -145,7 +145,7 @@ async function updateEventImage(eventId, image) {
 }
 
 // Función para eliminar la imagen de la base de datos
-async function deleteEventImage(req, res, eventId) {
+async function deleteEventImage(res, eventId) {
   try {
     const sql = "UPDATE events SET img_event = NULL WHERE id = ?";
     await pool.query(sql, [eventId]);
