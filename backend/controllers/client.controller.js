@@ -206,7 +206,7 @@ export const updateComment = async (req, res) => {
         // Eliminar el comentario actualizado en caso de error
         const deleteQuery = `DELETE FROM comments WHERE id = ?`;
         await pool.query(deleteQuery, [comment_id]);
-        return res.json({ message: "Comment inapropiated" });
+        return res.status(500).json({Error: "Comment inapropiated"});
       }
     }
 
