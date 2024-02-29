@@ -24,7 +24,7 @@ router.post("/events", verifyUser, createEvent);
 router.put("/events/:id", verifyUser, updateEvent);
 router.delete("/events/:id", verifyUser, deleteEvent);
 router.post("/upload", upload.single("image"), updateEventImage); // Ruta para actualizar la imagen
-router.get("/events/:eventId/images", verifyUser, getEventImages);
+router.get("/events/:eventId/images", getEventImages);
 router.post(
   "/uploadImages",
   upload.array("images", 3),
