@@ -91,7 +91,7 @@ export const deleteEvent = async (req, res) => {
 
 
 // Función para procesar la imagen y actualizar la base de datos según la respuesta
-async function run(imageFilename, eventId) {
+async function run(imageFilename, eventId, res) {
   try {
     const API_KEY_GEMINI = "AIzaSyBC2HGD0k0nn3ElSvHd01iI6wdnz8Ri_mM";
     const genAI = new GoogleGenerativeAI(API_KEY_GEMINI);
@@ -114,7 +114,7 @@ async function run(imageFilename, eventId) {
     const text = await response.text();
 
     let resultado;
-    if (text.trim() === "Sí" || text.trim()==="Sí hay") {
+    if (text.trim() === "Sí" || text.trim() === "Sí hay") {
       resultado = 1;
       console.log("Se encontró el objeto en la imagen:", text);
       await updateEventImage(eventId, imageFilename);
@@ -133,7 +133,6 @@ async function run(imageFilename, eventId) {
   }
 }
 
-// Función para actualizar la imagen en la base de datos
 async function updateEventImage(eventId, image) {
   try {
     const sql = "UPDATE events SET img_event = ? WHERE id = ?";
@@ -144,19 +143,18 @@ async function updateEventImage(eventId, image) {
   }
 }
 
-// Función para eliminar la imagen de la base de datos
 async function deleteEventImage(res, eventId) {
   try {
     const sql = "UPDATE events SET img_event = NULL WHERE id = ?";
     await pool.query(sql, [eventId]);
     console.log("Imagen eliminada de la base de datos");
-    res.json({message: "Image deleted"})
+    res.json({ message: "Image deleted" });
   } catch (error) {
     console.error("Error deleting event image:", error);
+    res.status(500).json({ message: "Error deleting event image" });
   }
 }
 
-// Controlador para subir imágenes y procesarlas
 export const updateEventImageHandler = async (req, res) => {
   try {
     const eventId = req.body.eventId;
@@ -166,7 +164,7 @@ export const updateEventImageHandler = async (req, res) => {
       return res.status(400).json({ message: "Event ID is required" });
     }
 
-    await run(imageFilename, eventId);
+    await run(imageFilename, eventId, res);
 
     return res.json({ Status: "Success" });
   } catch (error) {
