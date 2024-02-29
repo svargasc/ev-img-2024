@@ -183,10 +183,13 @@ export const createEventImages = async (req, res) => {
       return res.status(400).json({ message: "No images uploaded" });
     }
 
-    // Prepara los valores de las imágenes para la inserción en la base de datos
+    // Elimina las imágenes anteriores asociadas al evento
+    await pool.query("DELETE FROM event_images WHERE event_id = ?", [eventId]);
+
+    // Prepara los valores de las nuevas imágenes para la inserción en la base de datos
     const imageValues = images.map((image) => [eventId, image]);
 
-    // Ejecuta la consulta para insertar las imágenes en la base de datos
+    // Ejecuta la consulta para insertar las nuevas imágenes en la base de datos
     const insertQuery = "INSERT INTO event_images (event_id, image_url) VALUES ?";
     await pool.query(insertQuery, [imageValues]);
 
