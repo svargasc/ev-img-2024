@@ -121,7 +121,7 @@ async function run(imageFilename, eventId) {
     } else if (text.trim() === "No") {
       resultado = 0;
       console.log("No se encontró el objeto en la imagen:", text);
-      await deleteEventImage(eventId);
+      await deleteEventImage(req, res, eventId);
     } else {
       console.log("Respuesta desconocida:", text);
       return;
