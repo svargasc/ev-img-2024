@@ -191,7 +191,7 @@ export const createEventImages = async (req, res) => {
     await pool.query(insertQuery, [imageValues]);
 
     // Devuelve una respuesta JSON indicando que la carga de imágenes fue exitosa
-    return res.json({ Status: "Success" });
+    return res.json({ Status: "Success", imageValues });
   } catch (error) {
     console.error("Error in createEventImages:", error);
     return res.status(500).json({ message: "Internal Server Error" });
