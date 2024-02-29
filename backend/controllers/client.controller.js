@@ -117,32 +117,38 @@ export const addComment = async (req, res) => {
           const insertQuery = `UPDATE comments SET possitive_comments = ? WHERE comment_text = ?`;
           await pool.query(insertQuery, [comment_text, comment_text]);
           console.log("El comentario es a favor");
+          return res.json({
+            Status: "Success",
+            Message: "Comment added successfully",
+          });
         } else if (text === "En contra") {
           const insertQuery = `UPDATE comments SET negative_comments = ? WHERE comment_text = ?`;
           await pool.query(insertQuery, [comment_text, comment_text]);
           console.log("El comentario es en contra");
-        } else {
-          // Eliminar el comentario si no es clasificado correctamente
-          const deleteQuery = `DELETE FROM comments WHERE comment_text = ?`;
-          await pool.query(deleteQuery, [comment_text]);
-          return res.status(400).json({ Error: "Comment not classified correctly" });
+          return res.json({
+            Status: "Success",
+            Message: "Comment added successfully",
+          });
         }
       } catch (error) {
         console.log("Error al comentar el texto:", error);
         // Eliminar el comentario en caso de error
         const deleteQuery = `DELETE FROM comments WHERE comment_text = ?`;
         await pool.query(deleteQuery, [comment_text]);
-        return res.status(500).json({ Error: "Comment inapropiated" });
+        return res.json({
+          Status: "Inapropiated",
+          Message: "Comment deleted",
+        });
       }
     }
 
     const co = `Clasifica el siguiente comentario como A favor o En contra del evento ${comment_text}:`;
     classify_text(`${co} ${comment_text}`);
 
-    return res.json({
-      Status: "Success",
-      Message: "Comment added successfully",
-    });
+    // return res.json({
+    //   Status: "Success",
+    //   Message: "Comment added successfully",
+    // });
   } catch (error) {
     console.error("Error adding comment:", error);
     return res.status(500).json({ Error: "Failed to add comment" });
