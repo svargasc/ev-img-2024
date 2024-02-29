@@ -11,7 +11,7 @@ import {
   createEventImages,
   getEventImages,
 } from "../controllers/events.controller.js";
-import { updateEventImage } from "../controllers/events.controller.js";
+import { updateEventImageHandler } from "../controllers/events.controller.js";
 import verifyUser from "../jwt/verify.token.js";
 
 
@@ -23,8 +23,10 @@ router.get("/eventsClients", getEventsClients);
 router.post("/events", verifyUser, createEvent);
 router.put("/events/:id", verifyUser, updateEvent);
 router.delete("/events/:id", verifyUser, deleteEvent);
-router.post("/upload", upload.single("image"), updateEventImage); // Ruta para actualizar la imagen
+router.post("/upload", upload.single("image"), updateEventImageHandler);
+
 router.get("/events/:eventId/images", getEventImages);
+
 router.post(
   "/uploadImages",
   upload.array("images", 10),
@@ -32,7 +34,6 @@ router.post(
 );
 router.put(
   "/updateEventImage",
-  verifyUser,
   upload.single("image"),
   updateEventImages
 ); //Ruta para subir mas imagenes del evento
