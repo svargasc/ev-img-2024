@@ -27,7 +27,7 @@ const fechaFormateada = `${año}-${mes < 10 ? "0" + mes : mes}-${
 const getEvents = async () => {
   try {
     const [result] = await pool.query(
-      "SELECT * FROM events ORDER BY dates ASC"
+      "SELECT * FROM events WHERE done = 1 ORDER BY dates ASC"
     );
     return result;
   } catch (error) {
