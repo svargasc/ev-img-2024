@@ -51,3 +51,24 @@ export const dislikeEvent = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
+export const getTotalLikesDislikes = async (req, res) => {
+    try {
+        const eventId = req.params.eventId;
+
+        // Consulta para obtener la suma total de likes y dislikes para el evento dado
+        const [totalLikesDislikes] = await pool.query(
+            "SELECT SUM(`like`) AS total_likes, SUM(`dislike`) AS total_dislikes FROM event_interactions WHERE event_id = ?",
+            [eventId]
+        );
+
+        // Extraer los totales de likes y dislikes del resultado de la consulta
+        const { total_likes, total_dislikes } = totalLikesDislikes[0];
+
+        // Enviar la respuesta con los totales de likes y dislikes
+        return res.json({ total_likes, total_dislikes });
+    } catch (error) {
+        console.error("Error getting total likes and dislikes:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+};
