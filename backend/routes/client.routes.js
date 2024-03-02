@@ -3,7 +3,7 @@ import {verifyClients } from "../jwt/verify.token.clients.js";
 import {verifyCli } from "../jwt/verify.token.clients.js";
 import { login, register, addComment, updateComment, deleteComment, getClientComments, contact } from "../controllers/client.controller.js";
 import { chat } from "../controllers/bot.controller.js";
-import { likeEvent, dislikeEvent } from "../controllers/likesAndDisLikes.controller.js";
+import { likeEvent, dislikeEvent, getTotalLikesDislikes } from "../controllers/likesAndDisLikes.controller.js";
 
 const router = Router();
 router.get("/clientVerify", verifyClients);
@@ -32,6 +32,7 @@ router.post("/contact", contact);
 router.post("/chat", chat);
 
 //likes and dislikes
+router.get('/:eventId/likes-dislikes', getTotalLikesDislikes);
 router.post("/events/:eventId/like", verifyCli, likeEvent); // Endpoint para dar "like" a un evento
 router.post("/events/:eventId/dislike", verifyCli, dislikeEvent); // Endpoint para dar "dislike" a un evento
 
