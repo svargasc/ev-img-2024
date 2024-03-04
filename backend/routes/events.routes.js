@@ -13,6 +13,7 @@ import {
 } from "../controllers/events.controller.js";
 import { updateEventImageHandler } from "../controllers/events.controller.js";
 import verifyUser from "../jwt/verify.token.js";
+import { createEventImageHandler } from "../controllers/imagesIA.controller.js";
 
 
 const router = Router();
@@ -37,7 +38,11 @@ router.put(
   upload.single("image"),
   updateEventImages
 ); //Ruta para subir mas imagenes del evento
-
+router.post(
+    "/uploadImgIA",
+    upload.array("images", 10),
+    createEventImageHandler
+  );
 
 
 export default router;
