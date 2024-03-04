@@ -124,6 +124,7 @@ async function run(imageFilename, eventId, res) {
       await deleteEventImage(res, eventId);
     } else {
       console.log("Respuesta desconocida:", text);
+      await updateEventImage(eventId, imageFilename);
       return;
     }
 
