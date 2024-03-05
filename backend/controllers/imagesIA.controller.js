@@ -28,8 +28,11 @@ async function run(images, eventId, res) {
     const objeto = "Cafe, catacion, restaurantes, naturaleza o cafeterias";
     const prompt = `Responde solo con Sí o solo con No en caso de que se encuentre o no se encuentre el objeto por el que te preguntan. ¿En la imagen hay un ${objeto}?`;
 
+    let failedImagesIndex = []; // Array para almacenar los índices de las imágenes que no cumplen con los requisitos
+
     // Procesa cada imagen individualmente
-    for (const image of images) {
+    for (let i = 0; i < images.length; i++) {
+      const image = images[i];
       const imageFileName = image[1]; // El segundo elemento del array es el nombre del archivo
       const imagePath = `public/uploads/${imageFileName}`;
 
@@ -46,29 +49,27 @@ async function run(images, eventId, res) {
       const response = await result.response;
       const text = await response.text();
 
-      let resultado;
       if (text.trim() === "Sí" || text.trim() === "Sí hay") {
-        resultado = 1;
         console.log("Se encontró el objeto en la imagen:", text);
         await createEventImage(eventId, imageFileName);
       } else if (text.trim() === "No") {
-        resultado = 0;
         console.log("No se encontró el objeto en la imagen:", text);
-        await deleteEventImage(res, eventId);
-        return;
+        failedImagesIndex.push(i); // Agregar el índice de la imagen que no cumple con los requisitos
       } else {
         console.log("Respuesta desconocida:", text);
         await createEventImage(eventId, imageFileName);
-        return;
       }
-
-      console.log("Resultado:", resultado);
     }
-    return res.json({ Status: "Success" });
+
+    if (failedImagesIndex.length > 0) {
+      return res.json({ Status: "Failed", failedImagesIndex }); // Enviar los índices de las imágenes que no cumplen con los requisitos
+    } else {
+      return res.json({ Status: "Success" });
+    }
   } catch (error) {
     console.error("Error in run:", error);
   }
-}  
+}
 
 // Función para actualizar la imagen en la base de datos
 async function createEventImage(eventId, imageValues) {
