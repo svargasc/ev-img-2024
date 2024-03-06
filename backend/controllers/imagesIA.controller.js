@@ -43,7 +43,7 @@ async function run(images, eventId, res) {
             mimeType: "image/jpeg",
           },
         },
-      ]; 
+      ];
 
       const result = await model.generateContent([prompt, ...imageParts]);
       const response = await result.response;
@@ -85,19 +85,6 @@ async function createEventImage(eventId, imageValues) {
     res.status(500).json({ message: "Error creating event image" });
   }
 }
- 
-// Función para eliminar la imagen de la base de datos
-async function deleteEventImage(res, eventId) {
-  try {
-    await pool.query("DELETE FROM event_images WHERE event_id = ?", [eventId]);
-    console.log("Imagen eliminada de la base de datos");
-    // Enviar la respuesta al cliente desde aquí
-    return res.json({ message: "Image deleted" });
-  } catch (error) {
-    console.error("Error deleting event image:", error);
-    return res.status(500).json({ message: "Error deleting event image" });
-  }
-}
 
 // Controlador para subir imágenes y procesarlas
 export const createEventImageHandler = async (req, res) => {
@@ -122,9 +109,120 @@ export const createEventImageHandler = async (req, res) => {
 
     // Llama a la función run con los valores de las imágenes y el ID del evento
     await run(imageValues, eventId, res);
-
   } catch (error) {
     console.error("Error in createEventImageHandler:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// // Función para eliminar la imagen de la base de datos
+// async function deleteEventImage(res, eventId) {
+//   try {
+//     await pool.query("DELETE FROM event_images WHERE event_id = ?", [eventId]);
+//     console.log("Imagen eliminada de la base de datos");
+//     // Enviar la respuesta al cliente desde aquí
+//     return res.json({ message: "Image deleted" });
+//   } catch (error) {
+//     console.error("Error deleting event image:", error);
+//     return res.status(500).json({ message: "Error deleting event image" });
+//   }
+// }
+
+// Función para procesar y actualizar una imagen existente
+async function processAndUpdateImage(imageId, imageFileName) {
+  try {
+    const API_KEY_GEMINI = "AIzaSyBC2HGD0k0nn3ElSvHd01iI6wdnz8Ri_mM"; // Inserta tu propia clave de API
+    const genAI = new GoogleGenerativeAI(API_KEY_GEMINI);
+
+    const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
+    const objeto = "Cafe, catacion, restaurantes, naturaleza o cafeterias";
+    const prompt = `Responde solo con Sí o solo con No en caso de que se encuentre o no se encuentre el objeto por el que te preguntan. ¿En la imagen hay un ${objeto}?`;
+
+    const imageParts = [
+      {
+        inlineData: {
+          data: Buffer.from(
+            fs.readFileSync(`public/uploads/${imageFileName}`)
+          ).toString("base64"),
+          mimeType: "image/jpeg",
+        },
+      },
+    ];
+
+    const result = await model.generateContent([prompt, ...imageParts]);
+    const response = await result.response;
+    const text = await response.text();
+
+    if (text.trim() === "Sí" || text.trim() === "Sí hay") {
+      console.log("Se encontró el objeto en la imagen:", text);
+      await updateImageStatus(imageId, imageFileName);
+      return { status: "Success" };
+    } else if (text.trim() === "No") {
+      console.log("No se encontró el objeto en la imagen:", text);
+      await deleteImageStatus(imageId);
+      return {
+        status: "Failed",
+        message: "No se encontró el objeto en la imagen",
+      };
+    } else {
+      console.log("Respuesta desconocida:", text);
+      await updateImageStatus(imageId, imageFileName);
+      return { status: "Success" };
+    }
+  } catch (error) {
+    console.error("Error processing and updating image:", error);
+    throw error; // Propagar el error para manejarlo en el controlador
+  }
+}
+
+export const updateImageStatus = async (imageId, imageFileName) => {
+  try {
+    const result = await pool.query(
+      "UPDATE event_images SET image_url = ? WHERE id = ?",
+      [imageFileName, imageId]
+    );
+    console.log("Image updated:", result);
+  } catch (error) {
+    console.error("Error updating image:", error);
+    throw error;
+  }
+};
+
+export const deleteImageStatus = async (imageId) => {
+  try {
+    const result = await pool.query("DELETE FROM event_images WHERE id = ?", [
+      imageId,
+    ]);
+    console.log("Image deleted:", result);
+  } catch (error) {
+    console.error("Error updating image:", error);
+    throw error;
+  }
+};
+
+// Controlador para actualizar una imagen existente y procesarla
+export const updateAndProcessImageHandler = async (req, res) => {
+  try {
+    const imageId = req.params.imageId;
+    const imageFilename = req.file.filename;
+
+    if (!imageId) {
+      return res.status(400).json({ message: "Image ID is required" });
+    }
+
+    // Llama a la función para procesar y actualizar la imagen
+    const result = await processAndUpdateImage(imageId, imageFilename);
+
+    // Manejar la respuesta aquí
+    if (result.status === "Success") {
+      return res.json({ Status: "Success" });
+    } else {
+      return res
+        .status(400)
+        .json({ Status: "Failed", message: result.message });
+    }
+  } catch (error) {
+    console.error("Error in updateAndProcessImageHandler:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
