@@ -28,7 +28,7 @@ async function run(images, eventId, res) {
     const objeto = "Cafe, catacion, restaurantes, naturaleza o cafeterias";
     const prompt = `Responde solo con Sí o solo con No en caso de que se encuentre o no se encuentre el objeto por el que te preguntan. ¿En la imagen hay un ${objeto}?`;
 
-    let failedImagesIndex = []; // Array para almacenar los índices de las imágenes que no cumplen con los requisitos
+    let failedImages = []; // Array para almacenar los índices y nombres de las imágenes que no cumplen con los requisitos
 
     // Procesa cada imagen individualmente
     for (let i = 0; i < images.length; i++) {
@@ -54,15 +54,19 @@ async function run(images, eventId, res) {
         await createEventImage(eventId, imageFileName);
       } else if (text.trim() === "No") {
         console.log("No se encontró el objeto en la imagen:", text);
-        failedImagesIndex.push(i); // Agregar el índice de la imagen que no cumple con los requisitos
+        failedImages.push({ index: i, name: imageFileName }); // Agregar el índice y el nombre de la imagen que no cumple con los requisitos
       } else {
         console.log("Respuesta desconocida:", text);
         await createEventImage(eventId, imageFileName);
       }
     }
 
-    if (failedImagesIndex.length > 0) {
-      return res.json({ Status: "Failed", failedImagesIndex }); // Enviar los índices de las imágenes que no cumplen con los requisitos
+    if (failedImages.length > 0) {
+      const failedImagesInfo = failedImages.map((image) => ({
+        index: image.index,
+        name: image.name,
+      }));
+      return res.json({ Status: "Failed", failedImages: failedImagesInfo }); // Enviar los índices y nombres de las imágenes que no cumplen con los requisitos
     } else {
       return res.json({ Status: "Success" });
     }
