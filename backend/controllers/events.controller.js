@@ -48,15 +48,15 @@ export const getEvent = async (req, res) => {
 
 export const createEvent = async (req, res) => {
   try {
-    const { title, description, address, dates } = req.body;
+    const { title, description, address, dates, promotion } = req.body;
     const userId = req.user; // Obtenemos el user_id del usuario autenticado
 
     const [result] = await pool.query(
-      "INSERT INTO events(title, description, address, dates, user_id) VALUES (?, ?, ?, ?, ?)",
-      [title, description, address, dates, userId]
+      "INSERT INTO events(title, description, address, dates, promotion, user_id) VALUES (?, ?, ?, ?, ?, ?)",
+      [title, description, address, dates, promotion, userId]
     );
 
-    res.json({ id: result.insertId, title, description, address, dates });
+    res.json({ id: result.insertId, title, description, address, dates, promotion });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
