@@ -25,7 +25,7 @@ async function run(images, eventId, res) {
     const genAI = new GoogleGenerativeAI(API_KEY_GEMINI);
 
     const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
-    const objeto = "Cafe, catacion, restaurantes, naturaleza o cafeterias";
+    const objeto = "Cafe, catacion, restaurantes, naturaleza, cafeterias, panaderias, bares, comida, bebidas o licores";
     const prompt = `Responde solo con Sí o solo con No en caso de que se encuentre o no se encuentre el objeto por el que te preguntan. ¿En la imagen hay un ${objeto}?`;
 
     let failedImages = []; // Array para almacenar los índices y nombres de las imágenes que no cumplen con los requisitos
@@ -139,7 +139,7 @@ async function processAndUpdateImage(imageId, imageFileName) {
     const genAI = new GoogleGenerativeAI(API_KEY_GEMINI);
 
     const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
-    const objeto = "Cafe, catacion, restaurantes, naturaleza o cafeterias";
+    const objeto = "Cafe, catacion, restaurantes, naturaleza, cafeterias, panaderias, bares, comida, bebidas o licores";
     const prompt = `Responde solo con Sí o solo con No en caso de que se encuentre o no se encuentre el objeto por el que te preguntan. ¿En la imagen hay un ${objeto}?`;
 
     const imageParts = [
