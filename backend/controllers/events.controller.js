@@ -97,7 +97,7 @@ async function run(imageFilename, eventId, res) {
     const genAI = new GoogleGenerativeAI(API_KEY_GEMINI);
 
     const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
-    const objeto = "Cafe, catacion, restaurantes, naturaleza o cafeterias";
+    const objeto = "Cafe, catacion, restaurantes, naturaleza, cafeterias, panaderias, bares, comida, fiesta, celebraciones, eventos, bebidas o licores";
     const prompt = `Responde solo con Sí o solo con No en caso de que se encuentre o no se encuentre el objeto por el que te preguntan. ¿En la imagen hay un ${objeto}?`;
 
     const imageParts = [
