@@ -22,7 +22,7 @@ export const updateImageProfile = async (req, res) => {
     try {
         const userId = req.params.id;
         const { username, email } = req.body;
-        const image = req.file.filename;
+        const img_profile = req.file.filename;
 
         let updateFields = {};
         if (username) {
@@ -31,8 +31,8 @@ export const updateImageProfile = async (req, res) => {
         if (email) {
             updateFields.email = email;
         }
-        if (image) {
-            updateFields.image = image;
+        if (img_profile) {
+            updateFields.img_profile = img_profile;
         }
 
         const sql = "UPDATE users SET ? WHERE id = ?";
