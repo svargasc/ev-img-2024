@@ -15,7 +15,7 @@ router.post("/login", login);
 
 router.post("/logout", logout);
 
-router.put("/uploadImgProfile/:id", verifyToken, upload.single("profile"), updateImageProfile);
+router.post("/uploadImgProfile", verifyToken, upload.single("profile"), updateImageProfile);
 
 router.get('/profile', auth, profile)
 
