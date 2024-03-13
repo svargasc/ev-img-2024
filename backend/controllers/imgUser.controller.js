@@ -23,6 +23,10 @@ const storage = multer.diskStorage({
       const userId = req.body;
       const image = req.file.filename;
         
+      if (!userId) {
+        return res.status(400).json({ message: "User ID is required" });
+      }
+
       const sql = "UPDATE users SET img_profile = ? WHERE id = ?";
       await pool.query(sql, [image, userId]);
       console.log("Imagen actualizada en la base de datos");
