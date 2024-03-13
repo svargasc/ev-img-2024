@@ -20,13 +20,23 @@ export const upload = multer({ storage: storage });
 
 export const updateImageProfile = async (req, res) => {
     try {
-        const userId = req.body.userId;
-        const username = req.body.username;
-        const email = req.body.email;
+        const userId = req.params.id;
+        const { username, email } = req.body;
         const image = req.file.filename;
 
+        let updateFields = {};
+        if (username) {
+            updateFields.username = username;
+        }
+        if (email) {
+            updateFields.email = email;
+        }
+        if (image) {
+            updateFields.image = image;
+        }
+
         const sql = "UPDATE users SET ? WHERE id = ?";
-        await pool.query(sql, [username, email, image, userId]);
+        await pool.query(sql, [updateFields, userId]);
         console.log("Actualización correcta");
         return res.json({ Status: "Success Update Profile" });
     } catch (error) {
