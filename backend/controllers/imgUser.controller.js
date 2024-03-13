@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
 
   export const updateImageProfile = async (req, res) => {
     try {
-      const userId = req.body;
+      const userId = req.body.userId;
       const image = req.file.filename;
         
       if (!userId) {
