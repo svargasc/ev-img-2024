@@ -21,8 +21,8 @@ export const upload = multer({ storage: storage });
 export const updateImageProfile = async (req, res) => {
     try {
         const userId = req.params.id;
-        const { username, email } = req.body;
         const img_profile = req.file.filename;
+        const { username, email } = req.body;
 
         let updateFields = {};
         if (username) {
@@ -38,7 +38,30 @@ export const updateImageProfile = async (req, res) => {
         const sql = "UPDATE users SET ? WHERE id = ?";
         await pool.query(sql, [updateFields, userId]);
         console.log("Actualización correcta");
-        return res.json({ Status: "Success Update Profile" });
+        return res.json({ Status: "Success Update Profile", img_profile});
+    } catch (error) {
+        console.error("Error en updateImageProfile:", error);
+        return res.status(500).json({ message: "Error interno del servidor" });
+    }
+};
+
+export const updateInfoProfile = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const { username, email } = req.body;
+
+        let updateFields = {};
+        if (username) {
+            updateFields.username = username;
+        }
+        if (email) {
+            updateFields.email = email;
+        }
+
+        const sql = "UPDATE users SET ? WHERE id = ?";
+        await pool.query(sql, [updateFields, userId]);
+        console.log("Actualización correcta");
+        return res.json({ Status: "Success Update Profile", updateFields});
     } catch (error) {
         console.error("Error en updateImageProfile:", error);
         return res.status(500).json({ message: "Error interno del servidor" });
