@@ -24,28 +24,13 @@ export const updateImageProfile = async (req, res) => {
         const username = req.body.username;
         const email = req.body.email;
         const image = req.file.filename;
-        
-        const sql = "UPDATE users SET ? WHERE id = ?";
-        await pool.query(sql, [userId, username, email, image]);
-        console.log("Actulizacion correcta");
-        return res.json({ Status: "Success Update Profile" });
-        // const updates = {
-        //     username: req.body.username,
-        //     email: req.body.email,
-        //     img_profile: req.file.filename,
-        // };
-        // const result = await pool.query("UPDATE users SET ? WHERE id = ?", [
-        //     updates,
-        //     req.params.id,
-        // ]);
-        // if (!userId) {
-        //     return res.status(400).json({ message: "User ID is required" });
-        // }
-        // res.json(result, {Status: "Success Update Profile"});
-        // console.log("Actulizacion correcta");
 
+        const sql = "UPDATE users SET username = ?, email = ?, image = ? WHERE id = ?";
+        await pool.query(sql, [username, email, image, userId]);
+        console.log("Actualización correcta");
+        return res.json({ Status: "Success Update Profile" });
     } catch (error) {
-        console.error("Error in updateEventImageHandler:", error);
-        return res.status(500).json({ message: "Internal Server Error" });
+        console.error("Error en updateImageProfile:", error);
+        return res.status(500).json({ message: "Error interno del servidor" });
     }
 };
