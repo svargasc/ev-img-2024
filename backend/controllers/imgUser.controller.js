@@ -29,7 +29,7 @@ export const updateImageProfile = async (req, res) => {
         const updates = {
             username: req.body.username,
             email: req.body.email,
-            profile_image: req.file.filename,
+            img_profile: req.file.filename,
         };
         const result = await pool.query("UPDATE users SET ? WHERE id = ?", [
             updates,
