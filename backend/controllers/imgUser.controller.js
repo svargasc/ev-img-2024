@@ -29,6 +29,7 @@ export const updateImageProfile = async (req, res) => {
         const result = await pool.query("UPDATE users SET ? WHERE id = ?", [
             req.body,
             req.req.body.userId,
+            req.file.filename
         ]);
         if (!userId) {
             return res.status(400).json({ message: "User ID is required" });
