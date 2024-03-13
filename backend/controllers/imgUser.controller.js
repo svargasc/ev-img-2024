@@ -25,7 +25,7 @@ export const updateImageProfile = async (req, res) => {
         const email = req.body.email;
         const image = req.file.filename;
 
-        const sql = "UPDATE users SET username = ?, email = ?, img_profile = ? WHERE id = ?";
+        const sql = "UPDATE users SET ? WHERE id = ?";
         await pool.query(sql, [username, email, image, userId]);
         console.log("Actualización correcta");
         return res.json({ Status: "Success Update Profile" });
