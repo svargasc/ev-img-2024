@@ -20,17 +20,17 @@ export const upload = multer({ storage: storage });
 
 export const updateImageProfile = async (req, res) => {
     try {
-        const userId = req.params.id;
+        const userId = req.body;
         const img_profile = req.file.filename;
-        const { username, email } = req.body;
+        // const { username, email } = req.body;
 
         let updateFields = {};
-        if (username) {
-            updateFields.username = username;
-        }
-        if (email) {
-            updateFields.email = email;
-        }
+        // if (username) {
+        //     updateFields.username = username;
+        // }
+        // if (email) {
+        //     updateFields.email = email;
+        // }
         if (img_profile) {
             updateFields.img_profile = img_profile;
         }
