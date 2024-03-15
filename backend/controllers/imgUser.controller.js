@@ -20,7 +20,7 @@ export const upload = multer({ storage: storage });
 
 export const updateImageProfile = async (req, res) => {
     try {
-        const userId = req.body;
+        const userId = req.body.userId;
         const img_profile = req.file.filename;
         // const { username, email } = req.body;
 
