@@ -63,8 +63,8 @@ export const updateInfoProfile = async (req, res) => {
             updateFields.email = email;
         }
         if (password) {
-            const password = await hashPassword(password);
-            updateFields.password = password;
+            const hashedPassword = await hashPassword(password);
+            updateFields.password = hashedPassword;
         }
 
         const sql = "UPDATE users SET ? WHERE id = ?";
