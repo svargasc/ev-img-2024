@@ -1,7 +1,12 @@
 import multer from "multer";
 import { pool } from "../db/db.js";
 import path from "path";
+import bcrypt from "bcrypt";
 
+const saltRounds = 10;
+const hashPassword = async (password) => {
+    return await bcrypt.hash(password.toString(), saltRounds);
+  };
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -48,7 +53,7 @@ export const updateImageProfile = async (req, res) => {
 export const updateInfoProfile = async (req, res) => {
     try {
         const userId = req.params.id;
-        const { username, email } = req.body;
+        const { username, email, password } = req.body;
 
         let updateFields = {};
         if (username) {
@@ -56,6 +61,10 @@ export const updateInfoProfile = async (req, res) => {
         }
         if (email) {
             updateFields.email = email;
+        }
+        const hashedPassword = await hashPassword(password);
+        if (hashedPassword) {
+            updateFields.hashedPassword = hashedPassword;
         }
 
         const sql = "UPDATE users SET ? WHERE id = ?";
