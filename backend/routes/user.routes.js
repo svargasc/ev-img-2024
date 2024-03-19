@@ -8,7 +8,7 @@ const router = Router();
 
 router.get("/verify", verifyToken);
 
-router.get("/verifyGoogle", verifyTokens);
+router.post("/verifyGoogle", verifyTokens);
 
 router.post("/register", register);
 
