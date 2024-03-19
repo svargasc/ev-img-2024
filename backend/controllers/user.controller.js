@@ -1128,7 +1128,7 @@ export const verifyToken = async (req, res, next) => {
 export const verifyTokens = async (req, res, next) => {
     const authorizationHeader = req.headers["authorization"];
   
-    console.log("Token en los headers cuando se verifica", authorizationHeader);
+    console.log("Token en los headers cuando se verifica de Google", authorizationHeader);
     if (!authorizationHeader) {
       return res.status(401).json({ message: "Unauthorized 1" });
     }
