@@ -1137,7 +1137,7 @@ export const verifyToken = async (req, res, next) => {
     try {
       if (tokenType === 'Bearer') {
         // Verificar token JWT
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const decoded = jwt.verify(token, TOKEN_SECRET);
         req.user = decoded; // Guardar la información del usuario en el request
       } else if (tokenType === 'Google') {
         // Verificar token de Google
