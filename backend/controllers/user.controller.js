@@ -1088,40 +1088,75 @@ export const login = async (req, res) => {
 };
 
 
+// export const verifyToken = async (req, res, next) => {
+//   const authorizationHeader = req.headers["authorization"];
+
+//   console.log("Token en los headers cuando se verifica", authorizationHeader);
+//   if (!authorizationHeader) {
+//     return res.status(401).json({ message: "Unauthorized 1" });
+//   }
+
+//   const token = authorizationHeader.split(" ")[1];
+
+//   jwt.verify(token, TOKEN_SECRET, async (err, decoded) => {
+//     if (err) {
+//       return res.status(401).json({ message: "Unauthorized 2" });
+//     }
+
+//     try {
+//       const id = decoded.id;
+//       const userQuery = "SELECT * FROM users WHERE id = ?";
+//       const [usertData] = await pool.query(userQuery, [id]);
+
+//       if (userQuery.length === 0) {
+//         return res.status(404).json({ message: "User not found" });
+//       }
+
+//       const user = usertData[0];
+//       req.user = user;
+//       res.json({message: "ok admin", user})
+//       next();
+//     } catch (error) {
+//       console.error("Error verifying token:", error);
+//       return res.status(500).json({ message: "Internal Server Error" });
+//     }
+//   });
+// };
+
 export const verifyToken = async (req, res, next) => {
-  const authorizationHeader = req.headers["authorization"];
-
-  console.log("Token en los headers cuando se verifica", authorizationHeader);
-  if (!authorizationHeader) {
-    return res.status(401).json({ message: "Unauthorized 1" });
-  }
-
-  const token = authorizationHeader.split(" ")[1];
-
-  jwt.verify(token, TOKEN_SECRET, async (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ message: "Unauthorized 2" });
+    const authorizationHeader = req.headers["authorization"];
+  
+    console.log("Token en los headers cuando se verifica", authorizationHeader);
+    if (!authorizationHeader) {
+      return res.status(401).json({ message: "Unauthorized 1" });
     }
-
+  
+    const tokenType = authorizationHeader.split(" ")[0];
+    const token = authorizationHeader.split(" ")[1];
+  
     try {
-      const id = decoded.id;
-      const userQuery = "SELECT * FROM users WHERE id = ?";
-      const [usertData] = await pool.query(userQuery, [id]);
-
-      if (userQuery.length === 0) {
-        return res.status(404).json({ message: "User not found" });
+      if (tokenType === 'Bearer') {
+        // Verificar token JWT
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded; // Guardar la información del usuario en el request
+      } else if (tokenType === 'Google') {
+        // Verificar token de Google
+        const ticket = await client.verifyIdToken({
+          idToken: token,
+          audience: CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        req.user = payload; // Guardar la información del usuario en el request
+      } else {
+        throw new Error('Invalid token type');
       }
-
-      const user = usertData[0];
-      req.user = user;
-      res.json({message: "ok admin", user})
+      
       next();
     } catch (error) {
       console.error("Error verifying token:", error);
-      return res.status(500).json({ message: "Internal Server Error" });
+      return res.status(401).json({ message: "Unauthorized 2" });
     }
-  });
-};
+  };
 
 ////////////////////////////////////////
 
