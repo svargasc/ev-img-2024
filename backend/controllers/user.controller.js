@@ -4,6 +4,10 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import { createAccesToken } from "../jwt/jwt.js";
 import { TOKEN_SECRET } from "../config.js";
+import {OAuth2Client} from 'google-auth-library';
+const CLIENT_ID = "209166241205-gu840prv9amr3uhjdoqk5mdjvjvaj2n4.apps.googleusercontent.com"
+const client = new OAuth2Client(CLIENT_ID);
+
 
 const saltRounds = 10;
 
@@ -1118,6 +1122,35 @@ export const verifyToken = async (req, res, next) => {
     }
   });
 };
+
+////////////////////////////////////////
+
+export const verifyTokens = async (req, res, next) => {
+    const authorizationHeader = req.headers["authorization"];
+  
+    console.log("Token en los headers cuando se verifica", authorizationHeader);
+    if (!authorizationHeader) {
+      return res.status(401).json({ message: "Unauthorized 1" });
+    }
+  
+    const token = authorizationHeader.split(" ")[1];
+  
+    try {
+      const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: CLIENT_ID,
+      });
+      const payload = ticket.getPayload();
+      const userid = payload['sub'];
+      req.user = payload; // Guardar la información del usuario en el request para su uso posterior
+      next();
+    } catch (error) {
+      console.error("Error verifying token:", error);
+      return res.status(401).json({ message: "Unauthorized 2" });
+    }
+  };
+
+////////////////////////////////////////
 
 export const logout = (req, res) => {
   res.cookie("token", "", {
