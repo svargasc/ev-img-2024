@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { TOKEN_SECRET } from "../config.js";
 import nodemailer from "nodemailer";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-const API_KEY_GEMINI = "AIzaSyBC2HGD0k0nn3ElSvHd01iI6wdnz8Ri_mM";
+const API_KEY_GEMINI = "AIzaSyByg6wVbVLOsl4Q7Z3DIX-Y40jItyhquWQ";
 const genAI = new GoogleGenerativeAI(API_KEY_GEMINI);
 
 const saltRounds = 10;

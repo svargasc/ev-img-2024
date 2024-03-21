@@ -135,7 +135,7 @@ export const createEventImageHandler = async (req, res) => {
 // Función para procesar y actualizar una imagen existente
 async function processAndUpdateImage(imageId, imageFileName) {
   try {
-    const API_KEY_GEMINI = "AIzaSyBC2HGD0k0nn3ElSvHd01iI6wdnz8Ri_mM"; // Inserta tu propia clave de API
+    const API_KEY_GEMINI = "AIzaSyByg6wVbVLOsl4Q7Z3DIX-Y40jItyhquWQ"; // Inserta tu propia clave de API
     const genAI = new GoogleGenerativeAI(API_KEY_GEMINI);
 
     const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
