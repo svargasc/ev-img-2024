@@ -93,7 +93,7 @@ export const deleteEvent = async (req, res) => {
 // Función para procesar la imagen y actualizar la base de datos según la respuesta
 async function run(imageFilename, eventId, res) {
   try {
-    const API_KEY_GEMINI = "AIzaSyByg6wVbVLOsl4Q7Z3DIX-Y40jItyhquWQ";
+    const API_KEY_GEMINI = "AIzaSyBcMJQQjB_paYh7enIysZJC5w2MNtCDOg8";
     const genAI = new GoogleGenerativeAI(API_KEY_GEMINI);
 
     const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
