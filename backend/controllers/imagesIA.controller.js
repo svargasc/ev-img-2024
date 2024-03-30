@@ -21,7 +21,7 @@ export const upload = multer({ storage: storage });
 // Función para procesar la imagen y actualizar la base de datos según la respuesta
 async function run(images, eventId, res) {
   try {
-    const API_KEY_GEMINI = "AIzaSyBcMJQQjB_paYh7enIysZJC5w2MNtCDOg8";
+    const API_KEY_GEMINI = "AIzaSyA6MSKyt8WDWSwdEGxR_XvekIKGZjfle8U";
     const genAI = new GoogleGenerativeAI(API_KEY_GEMINI);
 
     const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
@@ -135,7 +135,7 @@ export const createEventImageHandler = async (req, res) => {
 // Función para procesar y actualizar una imagen existente
 async function processAndUpdateImage(imageId, imageFileName) {
   try {
-    const API_KEY_GEMINI = "AIzaSyBcMJQQjB_paYh7enIysZJC5w2MNtCDOg8"; // Inserta tu propia clave de API
+    const API_KEY_GEMINI = "AIzaSyA6MSKyt8WDWSwdEGxR_XvekIKGZjfle8U"; // Inserta tu propia clave de API
     const genAI = new GoogleGenerativeAI(API_KEY_GEMINI);
 
     const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
